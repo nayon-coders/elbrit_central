@@ -126,7 +126,7 @@ int count = 0;
               ),
             ),
           ),
-          bottom: _isDowloading ? PreferredSize(
+          bottom: isStartDownload ? PreferredSize(
             preferredSize: const Size.fromHeight(40.0),
             child: Container(
               width: MediaQuery.of(context).size.width,
@@ -136,8 +136,7 @@ int count = 0;
               child: Center(
                 child: Row(
                   children: [
-                    Text("File Downloading ", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400),),
-                    Text("$downloadPreogres %", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15),),
+                    Text("File Downloading... ", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400),),
                   ],
                 ),
               ),
@@ -145,88 +144,91 @@ int count = 0;
             
           ) : PreferredSize(preferredSize: Size.fromHeight(0.0), child: Center(),),
         ),
-        body: Container(
-          color: const Color(0xffEFF3F8),
-          width: MediaQuery.of(context).size.width,
-          child: FutureBuilder(
-            future: getWallData,
-            builder: (context, AsyncSnapshot<dynamic> snapshot){
-              if(snapshot.hasData){
-                return ListView.builder(
-                  //   shrinkWrap: true,
-                  //   physics: const NeverScrollableScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 20, horizontal: 10),
-                  itemCount: snapshot.data["pin_posts"].length,
-                  itemBuilder: (context, index) {
-                    var data = snapshot.data["pin_posts"];
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
+                color: const Color(0xffEFF3F8),
+                width: MediaQuery.of(context).size.width,
+                child: FutureBuilder(
+                  future: getWallData,
+                  builder: (context, AsyncSnapshot<dynamic> snapshot){
+                    if(snapshot.hasData){
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        //   physics: const NeverScrollableScrollPhysics(),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 20, horizontal: 10),
+                        itemCount: snapshot.data["pin_posts"].length,
+                        itemBuilder: (context, index) {
+                          var data = snapshot.data["pin_posts"];
 
-                    DateTime y = DateTime.parse(data[index]["created_at"]);
-                    final DateFormat formatter = DateFormat('dd-MM-yyyy, HH:mm');
-                    final String formatted = formatter.format(y);
-                    print(formatted);
-                    return Container(
-                        width: 380,
-                        margin: EdgeInsets.only(bottom: 20),
-                        decoration: const BoxDecoration(
-                          color: Color(0xffFFFFFF),
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(12),
-                          ),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 12, right: 12, top: 12),
-                                child: Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Stack(
-                                          children: [
-                                            SizedBox(
-                                              height: 30,
-                                              width: 30,
-                                              child: Image.asset(
-                                                'images/Vector-11.png',
-                                                scale: .8,
-                                              ),
-                                            ),
-                                            const Positioned(
-                                              top: 8,
-                                              left: 6,
-                                              child: Center(
-                                                child: Text(
-                                                  'EC',
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontWeight:
-                                                      FontWeight.bold),
+                          DateTime y = DateTime.parse(data[index]["created_at"]);
+                          final DateFormat formatter = DateFormat('dd-MM-yyyy, HH:mm');
+                          final String formatted = formatter.format(y);
+                          print(formatted);
+                          return Container(
+                            width: 380,
+                            margin: EdgeInsets.only(bottom: 20),
+                            decoration: const BoxDecoration(
+                              color: Color(0xffFFFFFF),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(12),
+                              ),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 12, right: 12, top: 12),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Stack(
+                                            children: [
+                                              SizedBox(
+                                                height: 30,
+                                                width: 30,
+                                                child: Image.asset(
+                                                  'images/Vector-11.png',
+                                                  scale: .8,
                                                 ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        Text(
-                                          'Elbrit Central',
-                                          style: GoogleFonts.dmSans(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w500,
-                                            color: const Color(0xff262930),
+                                              const Positioned(
+                                                top: 8,
+                                                left: 6,
+                                                child: Center(
+                                                  child: Text(
+                                                    'EC',
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                        FontWeight.bold),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                    data[index]["pin_post"] == 1 ?
-                                    Row(
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text(
+                                            'Elbrit Central',
+                                            style: GoogleFonts.dmSans(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w500,
+                                              color: const Color(0xff262930),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      data[index]["pin_post"] == 1 ?
+                                      Row(
                                         children: [
                                           Image.asset(
                                             'images/Vector-12.png',
@@ -247,123 +249,123 @@ int count = 0;
                                           )
                                         ],
                                       ): Center(),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            snapshot.data[index]["image"].length > 0 ?
+                                data[index]["image"].length > 0 ?
                                 InkWell(
-                                onTap: ()=>snapshot.data[index]["image"].length > 0 ?
-                                Navigator.push(context, MaterialPageRoute(builder: (context)=>SingleWall(singleWall: snapshot.data[index]["image"], text: snapshot.data[index]["details"],)))
-                                    : null,
-                                child: Container(
-                                     decoration: const BoxDecoration(
-                                       color: Color(0xffFFFFFF),
-                                       borderRadius: BorderRadius.all(
-                                         Radius.circular(12),
-                                       ),
-                                     ),
-                                     child: Padding(
-                                       padding: const EdgeInsets.only(
-                                           left: 10, right: 10),
-                                       child: Column(
-                                         children: [
-                                           const SizedBox(
-                                             height: 10,
-                                           ),
-                                           Row(
-                                             mainAxisAlignment:
-                                             MainAxisAlignment
-                                                 .spaceBetween,
-                                             children: [
-                                               Expanded(
-                                                 child: Container(
-                                                   height: snapshot.data[index]["image"].length > 3 ? 150 : 300,
-                                                   decoration:
+                                  onTap: ()=>data[index]["image"].length > 0 ?
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>SingleWall(singleWall: snapshot.data[index]["image"], text: snapshot.data[index]["details"],)))
+                                      : null,
+                                  child: Container(
+                                    decoration: const BoxDecoration(
+                                      color: Color(0xffFFFFFF),
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(12),
+                                      ),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 10, right: 10),
+                                      child: Column(
+                                        children: [
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment
+                                                .spaceBetween,
+                                            children: [
+                                              Expanded(
+                                                child: Container(
+                                                  height: data[index]["image"].length > 3 ? 150 : 300,
+                                                  decoration:
+                                                  BoxDecoration(
+                                                      borderRadius:BorderRadius.circular(12)
+                                                  ),
+                                                  child:  data[index]["image"][0].isNotEmpty?  ExtendedImage.network(
+                                                    "http://admin.elbrit.org/uploads/${data[index]["image"][0]}",
+                                                    fit: BoxFit.cover,
+                                                  ):Center(),
+                                                ),
+                                              ),
+                                              SizedBox(width: 10,),
+                                              if(data[index]["image"].length > 2)
+                                                Expanded(
+                                                  child: Container(
+                                                    height: data[index]["image"].length > 2? 150 : 300,
+                                                    margin: EdgeInsets.only(left: 10),
+                                                    decoration:
                                                     BoxDecoration(
-                                                     borderRadius:BorderRadius.circular(12)
-                                                   ),
-                                                   child:  snapshot.data[index]["image"][0].isNotEmpty?  ExtendedImage.network(
-                                                     "http://admin.elbrit.org/uploads/${snapshot.data[index]["image"][0]}",
-                                                     fit: BoxFit.cover,
-                                                   ):Center(),
-                                                 ),
-                                               ),
-                                               SizedBox(width: 10,),
-                                               if(snapshot.data[index]["image"].length > 2)
-                                               Expanded(
-                                                 child: Container(
-                                                     height: snapshot.data[index]["image"].length > 2? 150 : 300,
-                                                   margin: EdgeInsets.only(left: 10),
-                                                   decoration:
+                                                      borderRadius:BorderRadius.circular(12),
+                                                    ),
+                                                    child:data[index]["image"].length > 3?  ExtendedImage.network(
+                                                      "http://admin.elbrit.org/uploads/${data[index]["image"][1]}",
+                                                      fit: BoxFit.cover,
+                                                    ):Center(),
+                                                  ),
+                                                ),
+                                            ],
+                                          ),
+                                          SizedBox(height: 10,),
+                                          data[index]["image"].length > 2 ?
+                                          Row(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment
+                                                .spaceBetween,
+                                            children: [
+
+                                              Expanded(
+                                                child: Container(
+                                                  height: 150,
+                                                  decoration:
+                                                  BoxDecoration(
+                                                    borderRadius:BorderRadius.circular(12),
+                                                  ),
+                                                  child:  data[index]["image"][2] != null? ExtendedImage.network(
+                                                    "http://admin.elbrit.org/uploads/${data[index]["image"][2]}",
+                                                    fit: BoxFit.cover,
+                                                  ):Center(),
+                                                ),
+                                              ),
+                                              if(data[index]["image"].length > 3)
+                                                Expanded(
+                                                  child: Container(
+                                                    height: 150,
+                                                    margin: EdgeInsets.only(left: 10),
+                                                    decoration:
                                                     BoxDecoration(
-                                                       borderRadius:BorderRadius.circular(12),
-                                                   ),
-                                                   child: snapshot.data[index]["image"].length > 3?  ExtendedImage.network(
-                                                     "http://admin.elbrit.org/uploads/${snapshot.data[index]["image"][1]}",
-                                                     fit: BoxFit.cover,
-                                                   ):Center(),
-                                                 ),
-                                               ),
-                                             ],
-                                           ),
-                                           SizedBox(height: 10,),
-                                           snapshot.data[index]["image"].length > 2 ?
-                                           Row(
-                                             mainAxisAlignment:
-                                             MainAxisAlignment
-                                                 .spaceBetween,
-                                             children: [
+                                                      borderRadius: BorderRadius.circular(20),
+                                                    ),
+                                                    child: data[index]["image"][3] != null?   ExtendedImage.network(
+                                                      "http://admin.elbrit.org/uploads/${data[index]["image"][3]}",
+                                                      fit: BoxFit.cover,
+                                                    ):Center(),
+                                                  ),
+                                                ),
+                                            ],
+                                          )
+                                              :Center(),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ):Center(),
 
-                                                 Expanded(
-                                                   child: Container(
-                                                       height: 150,
-                                                       decoration:
-                                                         BoxDecoration(
-                                                           borderRadius:BorderRadius.circular(12),
-                                                       ),
-                                                       child:  snapshot.data[index]["image"][2] != null? ExtendedImage.network(
-                                                         "http://admin.elbrit.org/uploads/${snapshot.data[index]["image"][2]}",
-                                                         fit: BoxFit.cover,
-                                                       ):Center(),
-                                                   ),
-                                                 ),
-                                                if(snapshot.data[index]["image"].length > 3)
-                                                 Expanded(
-                                                   child: Container(
-                                                       height: 150,
-                                                       margin: EdgeInsets.only(left: 10),
-                                                       decoration:
-                                                        BoxDecoration(
-                                                         borderRadius: BorderRadius.circular(20),
-                                                       ),
-                                                       child: snapshot.data[index]["image"][3] != null?   ExtendedImage.network(
-                                                         "http://admin.elbrit.org/uploads/${snapshot.data[index]["image"][3]}",
-                                                         fit: BoxFit.cover,
-                                                       ):Center(),
-                                                   ),
-                                                 ),
-                                             ],
-                                           )
-                                               :Center(),
-                                         ],
-                                       ),
-                                     ),
-                                   ),
-                              ):Center(),
-
-                           //=======================================
-                           //=========== Video Sections =============
-                           snapshot.data[index]["video"] != null ?
+                                //=======================================
+                                //=========== Video Sections =============
+                                data[index]["video"] != null ?
                                 Stack(
                                   children: [
 
                                     Container(
                                       margin: EdgeInsets.only(left: 30, right: 30, ),
-                                     // color: Colors.w.withOpacity(0.1),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      color: Colors.grey.shade200,
-                                    ),
+                                      // color: Colors.w.withOpacity(0.1),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                        color: Colors.grey.shade200,
+                                      ),
                                       width: double.infinity,
                                       height: 150,
                                     ),
@@ -378,7 +380,7 @@ int count = 0;
                                       ),
                                       child: IconButton(
                                         onPressed: (){
-                                          Navigator.push(context, MaterialPageRoute(builder: (context)=>VideoApp(video: snapshot.data[index]["video"],)));
+                                          Navigator.push(context, MaterialPageRoute(builder: (context)=>VideoApp(video: data[index]["video"],)));
                                           //Navigator.push(context, MaterialPageRoute(builder: (context)=>BasicPlayerPage()));
                                           print("object");
                                         },
@@ -388,72 +390,77 @@ int count = 0;
 
                                   ],
                                 ):Center(),
-                            //=======================================
-                            //=========== File Sections =============
-                            snapshot.data[index]["filenames"] != null ?
+                                //=======================================
+                                //=========== File Sections =============
+                                data[index]["filenames"] != null ?
                                 Container(
                                   width: MediaQuery.of(context).size.width,
                                   height: 100,
                                   child: ListView.builder(
                                     scrollDirection: Axis.horizontal,
-                                    itemCount: snapshot.data[index]["filenames"].length,
-                                      itemBuilder: (_, fileIndex){
-                                        var completePath = "https://admin.elbrit.org/uploads/${snapshot.data[index]["filenames"][fileIndex]}";
-                                        print(completePath);
-                                        var fileName = (completePath.split('.').last);
+                                    itemCount: data[index]["filenames"].length,
+                                    itemBuilder: (_, fileIndex){
+                                      var completePath = "https://admin.elbrit.org/uploads/${data[index]["filenames"][fileIndex]}";
+                                      print(completePath);
+                                      var fileName = (completePath.split('.').last);
 
-                                        print("File name ================== $fileName");
-                                          return Container(
-                                            margin: const EdgeInsets.only(right: 10),
-                                          child: GestureDetector(
-                                            onTap: () async{
-                                              setState(()=>count++);
-                                              openFile(
-                                                url: completePath,
-                                                fileName: "elbrit_task$count.$fileName",
-                                              );
+                                      print("File name ================== $fileName");
+                                      return Container(
+                                        margin: const EdgeInsets.only(right: 10),
+                                        child: GestureDetector(
+                                          onTap: () async{
+                                            print("object");
+                                            setState((){
+                                              count++;
 
-                                              // var tempDir = await getTemporaryDirectory();
-                                              // String fullPath = tempDir.path + "/elbrit_central.pdf'";
-                                              // print('full path ${fullPath}');
-                                              //
-                                              // download2(dio, completePath, fullPath);
+                                            });
+                                            //_showMyDialog();
+                                            openFile(
+                                              url: completePath,
+                                              fileName: "elbrit_task$count.$fileName",
+                                            );
 
-                                            },child: fileName == "pdf" ? Image.asset("images/pdf.png",height: 80,width: 80,)
-                                              :  fileName == "cvs" ? Image.asset("images/cvs.jpeg",height: 80,width: 80,)
-                                              :  fileName == "doc" ? Image.asset("images/doc.png",height: 80,width: 80,)
-                                              : fileName == "doc" ? Image.asset("images/xl.png",height: 80,width: 80,)
-                                              : Image.asset("images/pdf.png",height: 80,width: 80,),
-                                          ),
-                                          //   child: InkWell(
-                                          //     onTap: (){
-                                          //       print("asdfdsfsd");
-                                          //     },
-                                          //     child: fileName == "pdf" ? Image.asset("images/pdf.png",height: 80,width: 80,)
-                                          //         :  fileName == "cvs" ? Image.asset("images/cvs.jpeg",height: 80,width: 80,)
-                                          //         :  fileName == "doc" ? Image.asset("images/doc.png",height: 80,width: 80,)
-                                          //         : fileName == "doc" ? Image.asset("images/xl.png",height: 80,width: 80,)
-                                          //         : Image.asset("images/pdf.png",height: 80,width: 80,),
-                                          //     // onTap: () async{
-                                          //     //   print("daf");
-                                          //       openFile(
-                                          //           url: completePath,
-                                          //           fileName: "Elbrit_center.$fileName",
-                                          //
-                                          //       );
-                                          //     // },
-                                          //     // onTap: ()async{
-                                          //     //
+                                            // var tempDir = await getTemporaryDirectory();
+                                            // String fullPath = tempDir.path + "/elbrit_central.pdf'";
+                                            // print('full path ${fullPath}');
+                                            //
+                                            // download2(dio, completePath, fullPath);
 
-                                          //     // },
-                                          //     // child: fileName == "pdf" ? Image.asset("images/pdf.png",height: 80,width: 80,)
-                                          //     //     :  fileName == "cvs" ? Image.asset("images/cvs.jpeg",height: 80,width: 80,)
-                                          //     //     :  fileName == "doc" ? Image.asset("images/doc.png",height: 80,width: 80,)
-                                          //     //     : fileName == "doc" ? Image.asset("images/xl.png",height: 80,width: 80,)
-                                          //     //     : Image.asset("images/pdf.png",height: 80,width: 80,),
-                                          // ),
-                                          );
-                                      },
+                                          },child: fileName == "pdf" ? Image.asset("images/pdf.png",height: 80,width: 80,)
+                                            :  fileName == "cvs" ? Image.asset("images/cvs.jpeg",height: 80,width: 80,)
+                                            :  fileName == "docx" ? Image.asset("images/doc.png",height: 80,width: 80,)
+                                            : fileName == "xl" ? Image.asset("images/xl.png",height: 80,width: 80,)
+                                            : Image.asset("images/pdf.png",height: 80,width: 80,),
+                                        ),
+                                        //   child: InkWell(
+                                        //     onTap: (){
+                                        //       print("asdfdsfsd");
+                                        //     },
+                                        //     child: fileName == "pdf" ? Image.asset("images/pdf.png",height: 80,width: 80,)
+                                        //         :  fileName == "cvs" ? Image.asset("images/cvs.jpeg",height: 80,width: 80,)
+                                        //         :  fileName == "doc" ? Image.asset("images/doc.png",height: 80,width: 80,)
+                                        //         : fileName == "doc" ? Image.asset("images/xl.png",height: 80,width: 80,)
+                                        //         : Image.asset("images/pdf.png",height: 80,width: 80,),
+                                        //     // onTap: () async{
+                                        //     //   print("daf");
+                                        //       openFile(
+                                        //           url: completePath,
+                                        //           fileName: "Elbrit_center.$fileName",
+                                        //
+                                        //       );
+                                        //     // },
+                                        //     // onTap: ()async{
+                                        //     //
+
+                                        //     // },
+                                        //     // child: fileName == "pdf" ? Image.asset("images/pdf.png",height: 80,width: 80,)
+                                        //     //     :  fileName == "cvs" ? Image.asset("images/cvs.jpeg",height: 80,width: 80,)
+                                        //     //     :  fileName == "doc" ? Image.asset("images/doc.png",height: 80,width: 80,)
+                                        //     //     : fileName == "doc" ? Image.asset("images/xl.png",height: 80,width: 80,)
+                                        //     //     : Image.asset("images/pdf.png",height: 80,width: 80,),
+                                        // ),
+                                      );
+                                    },
                                   ),
                                 ):Center(),
 
@@ -461,146 +468,152 @@ int count = 0;
 
 
 
-                            //  Stack(
-                            //   children: [
-                            //     Container(
-                            //       width: 380,
-                            //       child: _controller.value.isInitialized
-                            //           ? AspectRatio(
-                            //         aspectRatio: _controller.value.aspectRatio,
-                            //         child: VideoPlayer(_controller),
-                            //       )
-                            //           : Container(),
-                            //     ),
-                            //     Positioned(
-                            //         left: MediaQuery.of(context).size.width/2.4,
-                            //         right: MediaQuery.of(context).size.width/2.4,
-                            //         top: 0,
-                            //         bottom: 10,
-                            //         child: FloatingActionButton(
-                            //           backgroundColor: _isPlayingVideo? Colors.transparent: Colors.blueAccent,
-                            //           child: Icon(_isPlayingVideo? Icons.play_arrow_outlined:Icons.play_arrow, color: Colors.white,),
-                            //           onPressed: () {
-                            //             print("Dasfds");
-                            //             setState(() {
-                            //               if (_controller.value.isPlaying) {
-                            //                 _controller.pause();
-                            //               } else {
-                            //
-                            //                 setState(() {
-                            //                   VideoPlayerController.network(
-                            //                       'https://admin.elbrit.org/uploads/${snapshot.data[index]["video"] }').play();
-                            //                   _isPlayingVideo = true;
-                            //                 });
-                            //               }
-                            //             });
-                            //           },
-                            //         )),
-                            //   ],
-                            // ):Center(),
+                                //  Stack(
+                                //   children: [
+                                //     Container(
+                                //       width: 380,
+                                //       child: _controller.value.isInitialized
+                                //           ? AspectRatio(
+                                //         aspectRatio: _controller.value.aspectRatio,
+                                //         child: VideoPlayer(_controller),
+                                //       )
+                                //           : Container(),
+                                //     ),
+                                //     Positioned(
+                                //         left: MediaQuery.of(context).size.width/2.4,
+                                //         right: MediaQuery.of(context).size.width/2.4,
+                                //         top: 0,
+                                //         bottom: 10,
+                                //         child: FloatingActionButton(
+                                //           backgroundColor: _isPlayingVideo? Colors.transparent: Colors.blueAccent,
+                                //           child: Icon(_isPlayingVideo? Icons.play_arrow_outlined:Icons.play_arrow, color: Colors.white,),
+                                //           onPressed: () {
+                                //             print("Dasfds");
+                                //             setState(() {
+                                //               if (_controller.value.isPlaying) {
+                                //                 _controller.pause();
+                                //               } else {
+                                //
+                                //                 setState(() {
+                                //                   VideoPlayerController.network(
+                                //                       'https://admin.elbrit.org/uploads/${snapshot.data[index]["video"] }').play();
+                                //                   _isPlayingVideo = true;
+                                //                 });
+                                //               }
+                                //             });
+                                //           },
+                                //         )),
+                                //   ],
+                                // ):Center(),
 
 
 
-                            snapshot.data[index]["details"] != null?
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 12, right: 12, top: 8),
-                                child: Html(
-                                  data: "${snapshot.data[index]["details"]}",
-                                    onLinkTap: (dynamic? url, RenderContext context, Map<String, String> attributes, element) {
+                                data[index]["details"] != null?
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 12, right: 12, top: 8),
+                                  child: Html(
+                                      data: "${data[index]["details"]}",
+                                      onLinkTap: (dynamic? url, RenderContext context, Map<String, String> attributes, element) {
                                         print(url);
                                         launchUrl(Uri.parse(url));
-                                    }
+                                      }
 
 
-                                  // onLinkTap: (url, _, __, ___) async {
-                                  //   if (await canLaunch(url!)) {
-                                  //     await launch(
-                                  //       url,
-                                  //     );
-                                  //   }
-                                  // },
+                                    // onLinkTap: (url, _, __, ___) async {
+                                    //   if (await canLaunch(url!)) {
+                                    //     await launch(
+                                    //       url,
+                                    //     );
+                                    //   }
+                                    // },
+                                  ),
+
+
+
+                                  // Text(
+                                  //
+                                  // "${snapshot.data[index]["details"]}",
+                                  //   textAlign: TextAlign.left,
+                                  //   maxLines: 100,
+                                  //   overflow: TextOverflow.ellipsis,
+                                  //   textScaleFactor: 1.1,
+                                  //   style: GoogleFonts.dmSans(
+                                  //     fontSize: 14,
+                                  //     fontWeight: FontWeight.w400,
+                                  //     color: const Color(0xff262930),
+                                  //   ),
+                                  // ),
+                                ):Center(),
+                                const SizedBox(
+                                  height: 10,
                                 ),
-
-
-
-                                // Text(
-                                //
-                                // "${snapshot.data[index]["details"]}",
-                                //   textAlign: TextAlign.left,
-                                //   maxLines: 100,
-                                //   overflow: TextOverflow.ellipsis,
-                                //   textScaleFactor: 1.1,
-                                //   style: GoogleFonts.dmSans(
-                                //     fontSize: 14,
-                                //     fontWeight: FontWeight.w400,
-                                //     color: const Color(0xff262930),
-                                //   ),
-                                // ),
-                              ):Center(),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Container(
-                              height: 30,
-                              padding: const EdgeInsets.only(
-                                  left: 12, bottom: 10),
-                              child: Text(
-                               '$formatted',
-                                style: GoogleFonts.dmSans(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w500,
-                                  color: const Color(0xff8394AA),
+                                Container(
+                                  height: 30,
+                                  padding: const EdgeInsets.only(
+                                      left: 12, bottom: 10),
+                                  child: Text(
+                                    '$formatted',
+                                    style: GoogleFonts.dmSans(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w500,
+                                      color: const Color(0xff8394AA),
+                                    ),
+                                  ),
                                 ),
-                              ),
+                              ],
                             ),
-                          ],
-                        ),
-                      );
-                  },
+                          );
+                        },
 
-                );
-              }else if(snapshot.connectionState == ConnectionState.waiting){
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              }else{
-                return Center(
-                  child: Text("No data found"),
-                );
-              }
-            },
+                      );
+                    }else if(snapshot.connectionState == ConnectionState.waiting){
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }else{
+                      return Center(
+                        child: Text("No data found"),
+                      );
+                    }
+                  },
+                ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
-
-  Future download2(Dio dio, String url, String savePath) async {
-    try {
-      Response response = await dio.get(
-        url,
-        onReceiveProgress: showDownloadProgress,
-        //Received data with List<int>
-        options: Options(
-            responseType: ResponseType.bytes,
-            followRedirects: false,
-            validateStatus: (status) {
-              return status! < 500;
-            }),
-      );
-      print('Download Progresh ====== ${response.headers}');
-      File file = File(savePath);
-      var raf = file.openSync(mode: FileMode.write);
-      // response.data is List<int> type
-      raf.writeFromSync(response.data);
-      await raf.close();
-    } catch (e) {
-      print(e);
-    }
-  }
-
+  //
+  // Future download2(Dio dio, String url, String savePath) async {
+  //   try {
+  //     Response response = await dio.get(
+  //       url,
+  //       onReceiveProgress: showDownloadProgress,
+  //       //Received data with List<int>
+  //       options: Options(
+  //           responseType: ResponseType.bytes,
+  //           followRedirects: false,
+  //           validateStatus: (status) {
+  //             return status! < 500;
+  //           }),
+  //     );
+  //     print('Download Progresh ====== ${response.headers}');
+  //     File file = File(savePath);
+  //     var raf = file.openSync(mode: FileMode.write);
+  //     // response.data is List<int> type
+  //     raf.writeFromSync(response.data);
+  //     await raf.close();
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
+bool isStartDownload = false;
   Future openFile({required String url, required String fileName})async{
+    setState(() {
+      isStartDownload = true;
+    });
     print("object");
     final file = await DownLoadFile(url, fileName);
     //print("File is ============== ${file!.path}");
@@ -608,6 +621,11 @@ int count = 0;
      print("file ================= ${file.path}");
      OpenFile.open(file.path);
    }
+    setState(() {
+      isStartDownload = false;
+    });
+
+
 
   }
   Future<File?>DownLoadFile(String url, String name)async{
@@ -634,29 +652,56 @@ int count = 0;
 
   }
 
-  void showDownloadProgress(received, total) {
-    if (total != -1) {
-      print("Downloading" + (received / total * 100).toStringAsFixed(0) + "%");
-      setState(() {
-        _isDowloading = true;
-        downloadPreogres = (received / total * 100).toStringAsFixed(0);
-
-        if(downloadPreogres == "100"){
-          _isDowloading = false;
-          showDialog(
-              context: context,
-              builder: (BuildContext context) => new AlertDialog(
-                title: new Text('File Downloaded'),
-                actions: <Widget>[
-                  TextButton( onPressed: () {
-          Navigator.pop(context);
-          }, child: Text("Close"))
-                  ]
-                  ));
-        }
-      });
-    }
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: SingleChildScrollView(
+            child: Row(
+              children: <Widget>[
+                CircularProgressIndicator(),
+                Text("Downloading..."),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Ok'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
+
+  // void showDownloadProgress(received, total) {
+  //   if (total != -1) {
+  //     print("Downloading" + (received / total * 100).toStringAsFixed(0) + "%");
+  //     setState(() {
+  //       _isDowloading = true;
+  //       downloadPreogres = (received / total * 100).toStringAsFixed(0);
+  //
+  //       if(downloadPreogres == "100"){
+  //         _isDowloading = false;
+  //         showDialog(
+  //             context: context,
+  //             builder: (BuildContext context) => new AlertDialog(
+  //               title: new Text('File Downloaded'),
+  //               actions: <Widget>[
+  //                 TextButton( onPressed: () {
+  //         Navigator.pop(context);
+  //         }, child: Text("Close"))
+  //                 ]
+  //                 ));
+  //       }
+  //     });
+  //   }
+  // }
 
 }
 
