@@ -1,5 +1,5 @@
 import 'dart:isolate';
-
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:elbrit_central/components/button.dart';
 import 'package:elbrit_central/models/employee_info.dart';
 import 'package:elbrit_central/services/api.dart';
@@ -224,16 +224,16 @@ class _LogInPageState extends State<LogInPage> {
                                   ));
 
                                   //TODO: Delete when release
-                                  Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => HomePage()),
-                                          (route) => false);
+                                  // Navigator.pushAndRemoveUntil(
+                                  //     context,
+                                  //     MaterialPageRoute(
+                                  //         builder: (context) => HomePage()),
+                                  //         (route) => false);
 
                                   //TODO: Comment out when release
-                                  // Navigator.of(context).push(MaterialPageRoute(
-                                  //     builder: (context) =>
-                                  //         LogInOtpPage(_Controller.text)));
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) =>
+                                          LogInOtpPage(_Controller.text)));
                                 } else {
                                   ScaffoldMessenger.of(context)
                                       .showSnackBar(const SnackBar(
@@ -299,7 +299,7 @@ class _LogInPageState extends State<LogInPage> {
     ////updateUserProfile(osUserID);
     // Store it into shared prefs, So that later we can use it.
     print("The user id ======================= $userID");
-    print("User Id ======================= $osUserID");
+    print("player_id ======================= $osUserID");
     //send devide token
     var response = await http.post(Uri.parse("https://admin.elbrit.org/api/updateToken"),
         body: {
@@ -308,11 +308,29 @@ class _LogInPageState extends State<LogInPage> {
         }
     );
     print("Status code ================= ${response.statusCode}");
-  //  print("Send device token ====================== ${response.body}");
+
     if(response.statusCode == 200){
-      print("Send device token ====================== ${osUserID}");
+      Fluttertoast.showToast(
+          msg: "Your push notification is ON",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
+      print("Send device token ====================== $osUserID");
     }else{
       print("something went wearing");
+      Fluttertoast.showToast(
+          msg: "Your push notification isn't ON",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
     }
 
     // The promptForPushNotificationsWithUserResponse function will show the iOS push notification prompt. We recommend removing the following code and instead using an In-App Message to prompt for notification permission

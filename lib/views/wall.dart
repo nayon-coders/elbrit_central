@@ -83,7 +83,7 @@ int count = 0;
       //print(json["data"].toString());
        //getWalldataList = json["data"].toString();
        //print(getWalldataList);
-      print(data["pin_posts"]);
+      print(data);
 
 
       // print(inputFormat.parse(data["data"]));
@@ -144,442 +144,438 @@ int count = 0;
             
           ) : PreferredSize(preferredSize: Size.fromHeight(0.0), child: Center(),),
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                color: const Color(0xffEFF3F8),
-                width: MediaQuery.of(context).size.width,
-                child: FutureBuilder(
-                  future: getWallData,
-                  builder: (context, AsyncSnapshot<dynamic> snapshot){
-                    if(snapshot.hasData){
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        //   physics: const NeverScrollableScrollPhysics(),
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 20, horizontal: 10),
-                        itemCount: snapshot.data["pin_posts"].length,
-                        itemBuilder: (context, index) {
-                          var data = snapshot.data["pin_posts"];
+        body:  Container(
+          color: const Color(0xffEFF3F8),
+          width: MediaQuery.of(context).size.width,
+          child: FutureBuilder(
+            future: getWallData,
+            builder: (context, AsyncSnapshot<dynamic> snapshot){
+              if(snapshot.hasData){
+                return ListView.builder(
+                  shrinkWrap: true,
+                  //   physics: const NeverScrollableScrollPhysics(),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 20, horizontal: 10),
+                  itemCount: snapshot.data.length,
+                  itemBuilder: (context, index) {
+                    var data = snapshot.data;
 
-                          DateTime y = DateTime.parse(data[index]["created_at"]);
-                          final DateFormat formatter = DateFormat('dd-MM-yyyy, HH:mm');
-                          final String formatted = formatter.format(y);
-                          print(formatted);
-                          return Container(
-                            width: 380,
-                            margin: EdgeInsets.only(bottom: 20),
-                            decoration: const BoxDecoration(
-                              color: Color(0xffFFFFFF),
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(12),
-                              ),
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                    DateTime y = DateTime.parse(data[index]["created_at"]);
+                    final DateFormat formatter = DateFormat('dd-MM-yyyy, HH:mm');
+                    final String formatted = formatter.format(y);
+                    print(formatted);
+                    return Container(
+                      width: 380,
+                      margin: EdgeInsets.only(bottom: 20),
+                      decoration: const BoxDecoration(
+                        color: Color(0xffFFFFFF),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(12),
+                        ),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 12, right: 12, top: 12),
+                            child: Row(
+                              mainAxisAlignment:
+                              MainAxisAlignment.spaceBetween,
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 12, right: 12, top: 12),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Stack(
-                                            children: [
-                                              SizedBox(
-                                                height: 30,
-                                                width: 30,
-                                                child: Image.asset(
-                                                  'images/Vector-11.png',
-                                                  scale: .8,
-                                                ),
-                                              ),
-                                              const Positioned(
-                                                top: 8,
-                                                left: 6,
-                                                child: Center(
-                                                  child: Text(
-                                                    'EC',
-                                                    style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontWeight:
-                                                        FontWeight.bold),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Text(
-                                            'Elbrit Central',
-                                            style: GoogleFonts.dmSans(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w500,
-                                              color: const Color(0xff262930),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      data[index]["pin_post"] == 1 ?
-                                      Row(
-                                        children: [
-                                          Image.asset(
-                                            'images/Vector-12.png',
-                                            scale: 1,
-                                          ),
-                                          const SizedBox(
-                                            width: 4,
-                                          ),
-
-                                          Text(
-                                            'Pinned Post',
-                                            style: GoogleFonts.dmSans(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
-                                              color:
-                                              const Color(0xff8394AA),
-                                            ),
-                                          )
-                                        ],
-                                      ): Center(),
-                                    ],
-                                  ),
-                                ),
-                                data[index]["image"].length > 0 ?
-                                InkWell(
-                                  onTap: ()=>data[index]["image"].length > 0 ?
-                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>SingleWall(singleWall: snapshot.data[index]["image"], text: snapshot.data[index]["details"],)))
-                                      : null,
-                                  child: Container(
-                                    decoration: const BoxDecoration(
-                                      color: Color(0xffFFFFFF),
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(12),
-                                      ),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 10, right: 10),
-                                      child: Column(
-                                        children: [
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                          Row(
-                                            mainAxisAlignment:
-                                            MainAxisAlignment
-                                                .spaceBetween,
-                                            children: [
-                                              Expanded(
-                                                child: Container(
-                                                  height: data[index]["image"].length > 3 ? 150 : 300,
-                                                  decoration:
-                                                  BoxDecoration(
-                                                      borderRadius:BorderRadius.circular(12)
-                                                  ),
-                                                  child:  data[index]["image"][0].isNotEmpty?  ExtendedImage.network(
-                                                    "http://admin.elbrit.org/uploads/${data[index]["image"][0]}",
-                                                    fit: BoxFit.cover,
-                                                  ):Center(),
-                                                ),
-                                              ),
-                                              SizedBox(width: 10,),
-                                              if(data[index]["image"].length > 2)
-                                                Expanded(
-                                                  child: Container(
-                                                    height: data[index]["image"].length > 2? 150 : 300,
-                                                    margin: EdgeInsets.only(left: 10),
-                                                    decoration:
-                                                    BoxDecoration(
-                                                      borderRadius:BorderRadius.circular(12),
-                                                    ),
-                                                    child:data[index]["image"].length > 3?  ExtendedImage.network(
-                                                      "http://admin.elbrit.org/uploads/${data[index]["image"][1]}",
-                                                      fit: BoxFit.cover,
-                                                    ):Center(),
-                                                  ),
-                                                ),
-                                            ],
-                                          ),
-                                          SizedBox(height: 10,),
-                                          data[index]["image"].length > 2 ?
-                                          Row(
-                                            mainAxisAlignment:
-                                            MainAxisAlignment
-                                                .spaceBetween,
-                                            children: [
-
-                                              Expanded(
-                                                child: Container(
-                                                  height: 150,
-                                                  decoration:
-                                                  BoxDecoration(
-                                                    borderRadius:BorderRadius.circular(12),
-                                                  ),
-                                                  child:  data[index]["image"][2] != null? ExtendedImage.network(
-                                                    "http://admin.elbrit.org/uploads/${data[index]["image"][2]}",
-                                                    fit: BoxFit.cover,
-                                                  ):Center(),
-                                                ),
-                                              ),
-                                              if(data[index]["image"].length > 3)
-                                                Expanded(
-                                                  child: Container(
-                                                    height: 150,
-                                                    margin: EdgeInsets.only(left: 10),
-                                                    decoration:
-                                                    BoxDecoration(
-                                                      borderRadius: BorderRadius.circular(20),
-                                                    ),
-                                                    child: data[index]["image"][3] != null?   ExtendedImage.network(
-                                                      "http://admin.elbrit.org/uploads/${data[index]["image"][3]}",
-                                                      fit: BoxFit.cover,
-                                                    ):Center(),
-                                                  ),
-                                                ),
-                                            ],
-                                          )
-                                              :Center(),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ):Center(),
-
-                                //=======================================
-                                //=========== Video Sections =============
-                                data[index]["video"] != null ?
-                                Stack(
+                                Row(
                                   children: [
-
-                                    Container(
-                                      margin: EdgeInsets.only(left: 30, right: 30, ),
-                                      // color: Colors.w.withOpacity(0.1),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                        color: Colors.grey.shade200,
-                                      ),
-                                      width: double.infinity,
-                                      height: 150,
-                                    ),
-                                    Container(
-                                      alignment: Alignment.center,
-                                      margin: EdgeInsets.only(top: 50, bottom: 50, left: MediaQuery.of(context).size.width/2.4, right: 100),
-                                      width: 40,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(100),
-                                        color: Colors.blueAccent,
-                                      ),
-                                      child: IconButton(
-                                        onPressed: (){
-                                          Navigator.push(context, MaterialPageRoute(builder: (context)=>VideoApp(video: data[index]["video"],)));
-                                          //Navigator.push(context, MaterialPageRoute(builder: (context)=>BasicPlayerPage()));
-                                          print("object");
-                                        },
-                                        icon: Icon(Icons.play_arrow, color: Colors.white,),
-                                      ),
-                                    ),
-
-                                  ],
-                                ):Center(),
-                                //=======================================
-                                //=========== File Sections =============
-                                data[index]["filenames"] != null ?
-                                Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  height: 100,
-                                  child: ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: data[index]["filenames"].length,
-                                    itemBuilder: (_, fileIndex){
-                                      var completePath = "https://admin.elbrit.org/uploads/${data[index]["filenames"][fileIndex]}";
-                                      print(completePath);
-                                      var fileName = (completePath.split('.').last);
-
-                                      print("File name ================== $fileName");
-                                      return Container(
-                                        margin: const EdgeInsets.only(right: 10),
-                                        child: GestureDetector(
-                                          onTap: () async{
-                                            print("object");
-                                            setState((){
-                                              count++;
-
-                                            });
-                                            //_showMyDialog();
-                                            openFile(
-                                              url: completePath,
-                                              fileName: "elbrit_task$count.$fileName",
-                                            );
-
-                                            // var tempDir = await getTemporaryDirectory();
-                                            // String fullPath = tempDir.path + "/elbrit_central.pdf'";
-                                            // print('full path ${fullPath}');
-                                            //
-                                            // download2(dio, completePath, fullPath);
-
-                                          },child: fileName == "pdf" ? Image.asset("images/pdf.png",height: 80,width: 80,)
-                                            :  fileName == "cvs" ? Image.asset("images/cvs.jpeg",height: 80,width: 80,)
-                                            :  fileName == "docx" ? Image.asset("images/doc.png",height: 80,width: 80,)
-                                            : fileName == "xl" ? Image.asset("images/xl.png",height: 80,width: 80,)
-                                            : Image.asset("images/pdf.png",height: 80,width: 80,),
+                                    Stack(
+                                      children: [
+                                        SizedBox(
+                                          height: 30,
+                                          width: 30,
+                                          child: Image.asset(
+                                            'images/Vector-11.png',
+                                            scale: .8,
+                                          ),
                                         ),
-                                        //   child: InkWell(
-                                        //     onTap: (){
-                                        //       print("asdfdsfsd");
-                                        //     },
-                                        //     child: fileName == "pdf" ? Image.asset("images/pdf.png",height: 80,width: 80,)
-                                        //         :  fileName == "cvs" ? Image.asset("images/cvs.jpeg",height: 80,width: 80,)
-                                        //         :  fileName == "doc" ? Image.asset("images/doc.png",height: 80,width: 80,)
-                                        //         : fileName == "doc" ? Image.asset("images/xl.png",height: 80,width: 80,)
-                                        //         : Image.asset("images/pdf.png",height: 80,width: 80,),
-                                        //     // onTap: () async{
-                                        //     //   print("daf");
-                                        //       openFile(
-                                        //           url: completePath,
-                                        //           fileName: "Elbrit_center.$fileName",
-                                        //
-                                        //       );
-                                        //     // },
-                                        //     // onTap: ()async{
-                                        //     //
-
-                                        //     // },
-                                        //     // child: fileName == "pdf" ? Image.asset("images/pdf.png",height: 80,width: 80,)
-                                        //     //     :  fileName == "cvs" ? Image.asset("images/cvs.jpeg",height: 80,width: 80,)
-                                        //     //     :  fileName == "doc" ? Image.asset("images/doc.png",height: 80,width: 80,)
-                                        //     //     : fileName == "doc" ? Image.asset("images/xl.png",height: 80,width: 80,)
-                                        //     //     : Image.asset("images/pdf.png",height: 80,width: 80,),
-                                        // ),
-                                      );
-                                    },
-                                  ),
-                                ):Center(),
-
-
-
-
-
-                                //  Stack(
-                                //   children: [
-                                //     Container(
-                                //       width: 380,
-                                //       child: _controller.value.isInitialized
-                                //           ? AspectRatio(
-                                //         aspectRatio: _controller.value.aspectRatio,
-                                //         child: VideoPlayer(_controller),
-                                //       )
-                                //           : Container(),
-                                //     ),
-                                //     Positioned(
-                                //         left: MediaQuery.of(context).size.width/2.4,
-                                //         right: MediaQuery.of(context).size.width/2.4,
-                                //         top: 0,
-                                //         bottom: 10,
-                                //         child: FloatingActionButton(
-                                //           backgroundColor: _isPlayingVideo? Colors.transparent: Colors.blueAccent,
-                                //           child: Icon(_isPlayingVideo? Icons.play_arrow_outlined:Icons.play_arrow, color: Colors.white,),
-                                //           onPressed: () {
-                                //             print("Dasfds");
-                                //             setState(() {
-                                //               if (_controller.value.isPlaying) {
-                                //                 _controller.pause();
-                                //               } else {
-                                //
-                                //                 setState(() {
-                                //                   VideoPlayerController.network(
-                                //                       'https://admin.elbrit.org/uploads/${snapshot.data[index]["video"] }').play();
-                                //                   _isPlayingVideo = true;
-                                //                 });
-                                //               }
-                                //             });
-                                //           },
-                                //         )),
-                                //   ],
-                                // ):Center(),
-
-
-
-                                data[index]["details"] != null?
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 12, right: 12, top: 8),
-                                  child: Html(
-                                      data: "${data[index]["details"]}",
-                                      onLinkTap: (dynamic? url, RenderContext context, Map<String, String> attributes, element) {
-                                        print(url);
-                                        launchUrl(Uri.parse(url));
-                                      }
-
-
-                                    // onLinkTap: (url, _, __, ___) async {
-                                    //   if (await canLaunch(url!)) {
-                                    //     await launch(
-                                    //       url,
-                                    //     );
-                                    //   }
-                                    // },
-                                  ),
-
-
-
-                                  // Text(
-                                  //
-                                  // "${snapshot.data[index]["details"]}",
-                                  //   textAlign: TextAlign.left,
-                                  //   maxLines: 100,
-                                  //   overflow: TextOverflow.ellipsis,
-                                  //   textScaleFactor: 1.1,
-                                  //   style: GoogleFonts.dmSans(
-                                  //     fontSize: 14,
-                                  //     fontWeight: FontWeight.w400,
-                                  //     color: const Color(0xff262930),
-                                  //   ),
-                                  // ),
-                                ):Center(),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Container(
-                                  height: 30,
-                                  padding: const EdgeInsets.only(
-                                      left: 12, bottom: 10),
-                                  child: Text(
-                                    '$formatted',
-                                    style: GoogleFonts.dmSans(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w500,
-                                      color: const Color(0xff8394AA),
+                                        const Positioned(
+                                          top: 8,
+                                          left: 6,
+                                          child: Center(
+                                            child: Text(
+                                              'EC',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight:
+                                                  FontWeight.bold),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      'Elbrit Central',
+                                      style: GoogleFonts.dmSans(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                        color: const Color(0xff262930),
+                                      ),
+                                    ),
+                                  ],
                                 ),
+                                data[index]["pin_post"] == 1 ?
+                                Row(
+                                  children: [
+                                    Image.asset(
+                                      'images/Vector-12.png',
+                                      scale: 1,
+                                    ),
+                                    const SizedBox(
+                                      width: 4,
+                                    ),
+
+                                    Text(
+                                      'Pinned Post',
+                                      style: GoogleFonts.dmSans(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color:
+                                        const Color(0xff8394AA),
+                                      ),
+                                    )
+                                  ],
+                                ): Center(),
                               ],
                             ),
-                          );
-                        },
+                          ),
+                          data[index]["image"].length > 0 ?
+                          InkWell(
+                            onTap: ()=>data[index]["image"].length > 0 ?
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>SingleWall(singleWall: snapshot.data[index]["image"], text: snapshot.data[index]["details"],)))
+                                : null,
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                color: Color(0xffFFFFFF),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(12),
+                                ),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 10, right: 10),
+                                child: Column(
+                                  children: [
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment
+                                          .spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Container(
+                                            height: data[index]["image"].length > 3 ? 150 : 300,
+                                            decoration:
+                                            BoxDecoration(
+                                                borderRadius:BorderRadius.circular(12)
+                                            ),
+                                            child:  data[index]["image"][0].isNotEmpty?  ExtendedImage.network(
+                                              "http://admin.elbrit.org/uploads/${data[index]["image"][0]}",
+                                              fit: BoxFit.cover,
+                                            ):Center(),
+                                          ),
+                                        ),
+                                        SizedBox(width: 10,),
+                                        if(data[index]["image"].length > 2)
+                                          Expanded(
+                                            child: Container(
+                                              height: data[index]["image"].length > 2? 150 : 300,
+                                              margin: EdgeInsets.only(left: 10),
+                                              decoration:
+                                              BoxDecoration(
+                                                borderRadius:BorderRadius.circular(12),
+                                              ),
+                                              child:data[index]["image"].length > 3?  ExtendedImage.network(
+                                                "http://admin.elbrit.org/uploads/${data[index]["image"][1]}",
+                                                fit: BoxFit.cover,
+                                              ):Center(),
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 10,),
+                                    data[index]["image"].length > 2 ?
+                                    Row(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment
+                                          .spaceBetween,
+                                      children: [
 
-                      );
-                    }else if(snapshot.connectionState == ConnectionState.waiting){
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }else{
-                      return Center(
-                        child: Text("No data found"),
-                      );
-                    }
+                                        Expanded(
+                                          child: Container(
+                                            height: 150,
+                                            decoration:
+                                            BoxDecoration(
+                                              borderRadius:BorderRadius.circular(12),
+                                            ),
+                                            child:  data[index]["image"][2] != null? ExtendedImage.network(
+                                              "http://admin.elbrit.org/uploads/${data[index]["image"][2]}",
+                                              fit: BoxFit.cover,
+                                            ):Center(),
+                                          ),
+                                        ),
+                                        if(data[index]["image"].length > 3)
+                                          Expanded(
+                                            child: Container(
+                                              height: 150,
+                                              margin: EdgeInsets.only(left: 10),
+                                              decoration:
+                                              BoxDecoration(
+                                                borderRadius: BorderRadius.circular(20),
+                                              ),
+                                              child: data[index]["image"][3] != null?   ExtendedImage.network(
+                                                "http://admin.elbrit.org/uploads/${data[index]["image"][3]}",
+                                                fit: BoxFit.cover,
+                                              ):Center(),
+                                            ),
+                                          ),
+                                      ],
+                                    )
+                                        :Center(),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ):Center(),
+
+                          //=======================================
+                          //=========== Video Sections =============
+                          data[index]["video"] != null ?
+                          Stack(
+                            children: [
+
+                              Container(
+                                margin: EdgeInsets.only(left: 30, right: 30, ),
+                                // color: Colors.w.withOpacity(0.1),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: Colors.grey.shade200,
+                                ),
+                                width: double.infinity,
+                                height: 150,
+                              ),
+                              Container(
+                                alignment: Alignment.center,
+                                margin: EdgeInsets.only(top: 50, bottom: 50, left: MediaQuery.of(context).size.width/2.4, right: 100),
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: Colors.blueAccent,
+                                ),
+                                child: IconButton(
+                                  onPressed: (){
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>VideoApp(video: data[index]["video"],)));
+                                    //Navigator.push(context, MaterialPageRoute(builder: (context)=>BasicPlayerPage()));
+                                    print("object");
+                                  },
+                                  icon: Icon(Icons.play_arrow, color: Colors.white,),
+                                ),
+                              ),
+
+                            ],
+                          ):Center(),
+                          //=======================================
+                          //=========== File Sections =============
+                          data[index]["filenames"] != null ?
+                          Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: 100,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: data[index]["filenames"].length,
+                              itemBuilder: (_, fileIndex){
+
+
+                                var completePath = "https://admin.elbrit.org/uploads/${data[index]["filenames"][fileIndex]}";
+                                //print(completePath);
+                                var fileName = (completePath.split('.').last);
+
+                                print("File name ================== $fileName");
+                                return Container(
+                                  margin: const EdgeInsets.only(right: 10),
+                                  child: GestureDetector(
+                                    onTap: () async{
+                                      print("object");
+                                      setState((){
+                                        count++;
+                                      });
+                                      downloadFileandOpen(context, completePath, "elbrit_central_doc");
+                                      //_showMyDialog();
+                                      // openFile(
+                                      //   url: "https://admin.elbrit.org/uploads/2022091010050363.xlsx",
+                                      //   fileName: "elbrit_task$count.$fileName",
+                                      // );
+
+                                      // var tempDir = await getTemporaryDirectory();
+                                      // String fullPath = tempDir.path + "/elbrit_central.pdf'";
+                                      // print('full path ${fullPath}');
+                                      //
+                                      // download2(dio, completePath, fullPath);
+
+                                    },child: fileName == "pdf" ? Image.asset("images/pdf.png",height: 80,width: 80,)
+                                      :  fileName == "cvs" ? Image.asset("images/cvs.jpeg",height: 80,width: 80,)
+                                      :  fileName == "docx" ? Image.asset("images/doc.png",height: 120,width: 80, fit: BoxFit.cover,)
+                                      : fileName == "xlsx" ? Image.asset("images/xl.png",height: 80,width: 80,)
+                                      : Image.asset("images/pdf.png",height: 80,width: 80,),
+                                  ),
+                                  //   child: InkWell(
+                                  //     onTap: (){
+                                  //       print("asdfdsfsd");
+                                  //     },
+                                  //     child: fileName == "pdf" ? Image.asset("images/pdf.png",height: 80,width: 80,)
+                                  //         :  fileName == "cvs" ? Image.asset("images/cvs.jpeg",height: 80,width: 80,)
+                                  //         :  fileName == "doc" ? Image.asset("images/doc.png",height: 80,width: 80,)
+                                  //         : fileName == "doc" ? Image.asset("images/xl.png",height: 80,width: 80,)
+                                  //         : Image.asset("images/pdf.png",height: 80,width: 80,),
+                                  //     // onTap: () async{
+                                  //     //   print("daf");
+                                  //       openFile(
+                                  //           url: completePath,
+                                  //           fileName: "Elbrit_center.$fileName",
+                                  //
+                                  //       );
+                                  //     // },
+                                  //     // onTap: ()async{
+                                  //     //
+
+                                  //     // },
+                                  //     // child: fileName == "pdf" ? Image.asset("images/pdf.png",height: 80,width: 80,)
+                                  //     //     :  fileName == "cvs" ? Image.asset("images/cvs.jpeg",height: 80,width: 80,)
+                                  //     //     :  fileName == "doc" ? Image.asset("images/doc.png",height: 80,width: 80,)
+                                  //     //     : fileName == "doc" ? Image.asset("images/xl.png",height: 80,width: 80,)
+                                  //     //     : Image.asset("images/pdf.png",height: 80,width: 80,),
+                                  // ),
+                                );
+                              },
+                            ),
+                          ):Center(),
+
+
+
+
+
+                          //  Stack(
+                          //   children: [
+                          //     Container(
+                          //       width: 380,
+                          //       child: _controller.value.isInitialized
+                          //           ? AspectRatio(
+                          //         aspectRatio: _controller.value.aspectRatio,
+                          //         child: VideoPlayer(_controller),
+                          //       )
+                          //           : Container(),
+                          //     ),
+                          //     Positioned(
+                          //         left: MediaQuery.of(context).size.width/2.4,
+                          //         right: MediaQuery.of(context).size.width/2.4,
+                          //         top: 0,
+                          //         bottom: 10,
+                          //         child: FloatingActionButton(
+                          //           backgroundColor: _isPlayingVideo? Colors.transparent: Colors.blueAccent,
+                          //           child: Icon(_isPlayingVideo? Icons.play_arrow_outlined:Icons.play_arrow, color: Colors.white,),
+                          //           onPressed: () {
+                          //             print("Dasfds");
+                          //             setState(() {
+                          //               if (_controller.value.isPlaying) {
+                          //                 _controller.pause();
+                          //               } else {
+                          //
+                          //                 setState(() {
+                          //                   VideoPlayerController.network(
+                          //                       'https://admin.elbrit.org/uploads/${snapshot.data[index]["video"] }').play();
+                          //                   _isPlayingVideo = true;
+                          //                 });
+                          //               }
+                          //             });
+                          //           },
+                          //         )),
+                          //   ],
+                          // ):Center(),
+
+
+
+                          data[index]["details"] != null?
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 12, right: 12, top: 8),
+                            child: Html(
+                                data: "${data[index]["details"]}",
+                                onLinkTap: (dynamic? url, RenderContext context, Map<String, String> attributes, element) {
+                                  print(url);
+                                  launchUrl(Uri.parse(url));
+                                }
+
+
+                              // onLinkTap: (url, _, __, ___) async {
+                              //   if (await canLaunch(url!)) {
+                              //     await launch(
+                              //       url,
+                              //     );
+                              //   }
+                              // },
+                            ),
+
+
+
+                            // Text(
+                            //
+                            // "${snapshot.data[index]["details"]}",
+                            //   textAlign: TextAlign.left,
+                            //   maxLines: 100,
+                            //   overflow: TextOverflow.ellipsis,
+                            //   textScaleFactor: 1.1,
+                            //   style: GoogleFonts.dmSans(
+                            //     fontSize: 14,
+                            //     fontWeight: FontWeight.w400,
+                            //     color: const Color(0xff262930),
+                            //   ),
+                            // ),
+                          ):Center(),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Container(
+                            height: 30,
+                            padding: const EdgeInsets.only(
+                                left: 12, bottom: 10),
+                            child: Text(
+                              '$formatted',
+                              style: GoogleFonts.dmSans(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w500,
+                                color: const Color(0xff8394AA),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
                   },
-                ),
-              ),
-            ],
+
+                );
+              }else if(snapshot.connectionState == ConnectionState.waiting){
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }else{
+                return const Center(
+                  child: Text("No data found"),
+                );
+              }
+            },
           ),
         ),
       ),
@@ -609,48 +605,98 @@ int count = 0;
   //     print(e);
   //   }
   // }
-bool isStartDownload = false;
-  Future openFile({required String url, required String fileName})async{
-    setState(() {
-      isStartDownload = true;
-    });
-    print("object");
-    final file = await DownLoadFile(url, fileName);
-    //print("File is ============== ${file!.path}");
-   if(file!=null) {
-     print("file ================= ${file.path}");
-     OpenFile.open(file.path);
-   }
+  bool isStartDownload = false;
+  void downloadFileandOpen(BuildContext context, String url, String fileName) async {
+setState(() {
+  isStartDownload = true;
+});
+print(url);
+print("url set");
+    var directory = Platform.isAndroid
+        ? await getExternalStorageDirectory() //FOR ANDROID
+        : await getApplicationSupportDirectory();
+
+    String? dir = directory?.path;
+
+    File file = new File('$dir/$fileName');
+
+    if (await file.exists()) {
+      OpenFile.open(file.path);
+    } else {
+      print("file is download");
+      //Utils.showLoaderDialogwithTitle(context, "Downloading...");
+
+      HttpClient httpClient = new HttpClient();
+
+      try {
+        var request = await httpClient.getUrl(Uri.parse(url));
+        var response = await request.close();
+        print(response.statusCode);
+        if (response.statusCode == 200) {
+          var bytes = await consolidateHttpClientResponseBytes(response);
+          print(file.path);
+          await file.writeAsBytes(bytes);
+        }
+        Navigator.pop(context);
+      } catch (ex) {
+        Navigator.pop(context);
+        print(ex.toString());
+       // Utils.displayToast(context, ex.toString());
+      } finally {
+        OpenFile.open(file.path);
+      }
+    }
+
     setState(() {
       isStartDownload = false;
     });
-
-
-
   }
-  Future<File?>DownLoadFile(String url, String name)async{
-    try {
-      final appStore = await getApplicationDocumentsDirectory();
-      final file = await File('${appStore.path}/$name');
-
-      final response = await Dio().get(
-        url,
-        options: Options(
-            responseType: ResponseType.bytes,
-            followRedirects: true,
-            receiveTimeout: 0
-        ),
-      );
-      final raf = file.openSync(mode: FileMode.write);
-      raf.writeFromSync(response.data);
-      await raf.close();
-      print("file===============$file");
-      return file;
-    }catch(e){
-      return null;
-    }
-
-  }
+// bool isStartDownload = false;
+//   Future openFile({required String url, required String fileName})async{
+//     setState(() {
+//       isStartDownload = true;
+//     });
+//     print("object");
+//     final file = await DownLoadFile(url, fileName);
+//     //print("File is ============== ${file!.path}");
+//    if(file!=null) {
+//      print("file ================= ${file.path}");
+//      OpenFile.open(file.path);
+//      print("file downloaded");
+//    }else{
+//      print("file not download");
+//    }
+//    print(file);
+//     setState(() {
+//       isStartDownload = false;
+//     });
+//
+//
+//
+//   }
+//   Future<File?>DownLoadFile(String url, String name)async{
+//     try {
+//       final appStore = await getApplicationDocumentsDirectory();
+//       final file = await File('${appStore.path}/$name');
+//
+//       final response = await Dio().get(
+//         "https://admin.elbrit.org/uploads/2022091010050363.xlsx",
+//         options: Options(
+//             responseType: ResponseType.bytes,
+//             followRedirects: true,
+//             receiveTimeout: 0
+//         ),
+//       );
+//       final raf = file.openSync(mode: FileMode.write);
+//       raf.writeFromSync(response.data);
+//       await raf.close();
+//       print("file===============$file");
+//       return file;
+//     }catch(e){
+//       return null;
+//     }
+//
+//   }
 
   Future<void> _showMyDialog() async {
     return showDialog<void>(

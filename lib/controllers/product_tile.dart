@@ -64,6 +64,7 @@ class ProductTile extends StatelessWidget {
               const SizedBox(
                 height: 5,
               ),
+
               Text(
                 // productModels.isNotEmpty
                 //     ? productModels[0].productUniqueness!

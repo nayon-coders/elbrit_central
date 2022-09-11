@@ -34,6 +34,8 @@ dependencies:
   onesignal_flutter: ^3.4.1
   open_file: any
   url_launcher: ^6.1.5
+  fluttertoast: ^8.0.8
+
 
 dev_dependencies:
   flutter_test:
