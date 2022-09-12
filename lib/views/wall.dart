@@ -7,9 +7,11 @@ import 'package:elbrit_central/models/wall_info.dart';
 import 'package:elbrit_central/views/single-wall.dart';
 import 'package:elbrit_central/views/video-play.dart';
 import 'package:extended_image/extended_image.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import 'package:open_file/open_file.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
@@ -19,6 +21,11 @@ import 'package:video_player/video_player.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:dio/dio.dart';
+import 'package:ext_storage/ext_storage.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 
 
@@ -67,6 +74,12 @@ class _WallPageState extends State<WallPage> {
     getWallDataMethod();
   }
   var downloadPreogres;
+
+  //get storage permission
+  void getPermission() async {
+    print("getPermission");
+    await Permission.storage.isGranted;
+  }
 
 int count = 0;
   var inputFormat = DateFormat('dd/MM/yyyy HH:mm');
@@ -389,7 +402,7 @@ int count = 0;
                           ):Center(),
                           //=======================================
                           //=========== File Sections =============
-                          data[index]["filenames"] != null ?
+                          data[index]["filenames"].length !=0 ?
                           Container(
                             width: MediaQuery.of(context).size.width,
                             height: 100,
@@ -408,22 +421,18 @@ int count = 0;
                                   margin: const EdgeInsets.only(right: 10),
                                   child: GestureDetector(
                                     onTap: () async{
-                                      print("object");
                                       setState((){
                                         count++;
                                       });
-                                      downloadFileandOpen(context, completePath, "elbrit_central_doc");
-                                      //_showMyDialog();
-                                      // openFile(
-                                      //   url: "https://admin.elbrit.org/uploads/2022091010050363.xlsx",
-                                      //   fileName: "elbrit_task$count.$fileName",
-                                      // );
+                                      String path =
+                                      await ExtStorage.getExternalStoragePublicDirectory(
+                                          ExtStorage.DIRECTORY_DOWNLOADS);
 
-                                      // var tempDir = await getTemporaryDirectory();
-                                      // String fullPath = tempDir.path + "/elbrit_central.pdf'";
-                                      // print('full path ${fullPath}');
-                                      //
-                                      // download2(dio, completePath, fullPath);
+
+                                      String fullPath = "$path/elbrit_central_task$count.$fileName";
+                                      download2(dio, completePath, fullPath);
+                                      print("object");
+
 
                                     },child: fileName == "pdf" ? Image.asset("images/pdf.png",height: 80,width: 80,)
                                       :  fileName == "cvs" ? Image.asset("images/cvs.jpeg",height: 80,width: 80,)
@@ -431,33 +440,7 @@ int count = 0;
                                       : fileName == "xlsx" ? Image.asset("images/xl.png",height: 80,width: 80,)
                                       : Image.asset("images/pdf.png",height: 80,width: 80,),
                                   ),
-                                  //   child: InkWell(
-                                  //     onTap: (){
-                                  //       print("asdfdsfsd");
-                                  //     },
-                                  //     child: fileName == "pdf" ? Image.asset("images/pdf.png",height: 80,width: 80,)
-                                  //         :  fileName == "cvs" ? Image.asset("images/cvs.jpeg",height: 80,width: 80,)
-                                  //         :  fileName == "doc" ? Image.asset("images/doc.png",height: 80,width: 80,)
-                                  //         : fileName == "doc" ? Image.asset("images/xl.png",height: 80,width: 80,)
-                                  //         : Image.asset("images/pdf.png",height: 80,width: 80,),
-                                  //     // onTap: () async{
-                                  //     //   print("daf");
-                                  //       openFile(
-                                  //           url: completePath,
-                                  //           fileName: "Elbrit_center.$fileName",
-                                  //
-                                  //       );
-                                  //     // },
-                                  //     // onTap: ()async{
-                                  //     //
 
-                                  //     // },
-                                  //     // child: fileName == "pdf" ? Image.asset("images/pdf.png",height: 80,width: 80,)
-                                  //     //     :  fileName == "cvs" ? Image.asset("images/cvs.jpeg",height: 80,width: 80,)
-                                  //     //     :  fileName == "doc" ? Image.asset("images/doc.png",height: 80,width: 80,)
-                                  //     //     : fileName == "doc" ? Image.asset("images/xl.png",height: 80,width: 80,)
-                                  //     //     : Image.asset("images/pdf.png",height: 80,width: 80,),
-                                  // ),
                                 );
                               },
                             ),
@@ -581,173 +564,49 @@ int count = 0;
       ),
     );
   }
-  //
-  // Future download2(Dio dio, String url, String savePath) async {
-  //   try {
-  //     Response response = await dio.get(
-  //       url,
-  //       onReceiveProgress: showDownloadProgress,
-  //       //Received data with List<int>
-  //       options: Options(
-  //           responseType: ResponseType.bytes,
-  //           followRedirects: false,
-  //           validateStatus: (status) {
-  //             return status! < 500;
-  //           }),
-  //     );
-  //     print('Download Progresh ====== ${response.headers}');
-  //     File file = File(savePath);
-  //     var raf = file.openSync(mode: FileMode.write);
-  //     // response.data is List<int> type
-  //     raf.writeFromSync(response.data);
-  //     await raf.close();
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  // }
+
   bool isStartDownload = false;
-  void downloadFileandOpen(BuildContext context, String url, String fileName) async {
-setState(() {
-  isStartDownload = true;
-});
-print(url);
-print("url set");
-    var directory = Platform.isAndroid
-        ? await getExternalStorageDirectory() //FOR ANDROID
-        : await getApplicationSupportDirectory();
 
-    String? dir = directory?.path;
-
-    File file = new File('$dir/$fileName');
-
-    if (await file.exists()) {
-      OpenFile.open(file.path);
-    } else {
-      print("file is download");
-      //Utils.showLoaderDialogwithTitle(context, "Downloading...");
-
-      HttpClient httpClient = new HttpClient();
-
-      try {
-        var request = await httpClient.getUrl(Uri.parse(url));
-        var response = await request.close();
-        print(response.statusCode);
-        if (response.statusCode == 200) {
-          var bytes = await consolidateHttpClientResponseBytes(response);
-          print(file.path);
-          await file.writeAsBytes(bytes);
-        }
-        Navigator.pop(context);
-      } catch (ex) {
-        Navigator.pop(context);
-        print(ex.toString());
-       // Utils.displayToast(context, ex.toString());
-      } finally {
-        OpenFile.open(file.path);
-      }
+  Future download2(Dio dio, String url, String savePath) async {
+    setState(() {
+       isStartDownload = true;
+    });
+    try {
+      Response response = await dio.get(
+        url,
+       // onReceiveProgress: showDownloadProgress,
+        //Received data with List<int>
+        options: Options(
+            responseType: ResponseType.bytes,
+            followRedirects: false,
+            validateStatus: (status) {
+              return status! < 500;
+            }),
+      );
+      print('Download Progresh ====== ${response.headers}');
+      File file = File(savePath);
+      var raf = file.openSync(mode: FileMode.write);
+      // response.data is List<int> type
+      raf.writeFromSync(response.data);
+      await raf.close();
+    } catch (e) {
+      print(e);
     }
-
     setState(() {
       isStartDownload = false;
     });
-  }
-// bool isStartDownload = false;
-//   Future openFile({required String url, required String fileName})async{
-//     setState(() {
-//       isStartDownload = true;
-//     });
-//     print("object");
-//     final file = await DownLoadFile(url, fileName);
-//     //print("File is ============== ${file!.path}");
-//    if(file!=null) {
-//      print("file ================= ${file.path}");
-//      OpenFile.open(file.path);
-//      print("file downloaded");
-//    }else{
-//      print("file not download");
-//    }
-//    print(file);
-//     setState(() {
-//       isStartDownload = false;
-//     });
-//
-//
-//
-//   }
-//   Future<File?>DownLoadFile(String url, String name)async{
-//     try {
-//       final appStore = await getApplicationDocumentsDirectory();
-//       final file = await File('${appStore.path}/$name');
-//
-//       final response = await Dio().get(
-//         "https://admin.elbrit.org/uploads/2022091010050363.xlsx",
-//         options: Options(
-//             responseType: ResponseType.bytes,
-//             followRedirects: true,
-//             receiveTimeout: 0
-//         ),
-//       );
-//       final raf = file.openSync(mode: FileMode.write);
-//       raf.writeFromSync(response.data);
-//       await raf.close();
-//       print("file===============$file");
-//       return file;
-//     }catch(e){
-//       return null;
-//     }
-//
-//   }
-
-  Future<void> _showMyDialog() async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: SingleChildScrollView(
-            child: Row(
-              children: <Widget>[
-                CircularProgressIndicator(),
-                Text("Downloading..."),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Ok'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
+    Fluttertoast.showToast(
+        msg: "File downloaded",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 16.0
     );
   }
 
-  // void showDownloadProgress(received, total) {
-  //   if (total != -1) {
-  //     print("Downloading" + (received / total * 100).toStringAsFixed(0) + "%");
-  //     setState(() {
-  //       _isDowloading = true;
-  //       downloadPreogres = (received / total * 100).toStringAsFixed(0);
-  //
-  //       if(downloadPreogres == "100"){
-  //         _isDowloading = false;
-  //         showDialog(
-  //             context: context,
-  //             builder: (BuildContext context) => new AlertDialog(
-  //               title: new Text('File Downloaded'),
-  //               actions: <Widget>[
-  //                 TextButton( onPressed: () {
-  //         Navigator.pop(context);
-  //         }, child: Text("Close"))
-  //                 ]
-  //                 ));
-  //       }
-  //     });
-  //   }
-  // }
+
 
 }
 
