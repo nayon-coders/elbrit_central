@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:downloads_path_provider_28/downloads_path_provider_28.dart';
 import 'package:flutter/foundation.dart';
 import 'package:elbrit_central/controllers/app_bar.dart';
 import 'package:elbrit_central/models/wall_info.dart';
@@ -68,9 +69,16 @@ class _WallPageState extends State<WallPage> {
   var downloadPreogres;
 
   //get storage permission
-  void getPermission() async {
-    print("getPermission");
-    await Permission.storage.isGranted;
+  Future<bool> _requestPermission(Permission permission) async {
+    if (await permission.isGranted) {
+      return true;
+    } else {
+      var result = await permission.request();
+      if (result == PermissionStatus.granted) {
+        return true;
+      }
+    }
+    return false;
   }
 
 int count = 0;
@@ -146,7 +154,7 @@ int count = 0;
                 ),
               ),
             ),
-            
+
           ) : PreferredSize(preferredSize: Size.fromHeight(0.0), child: Center(),),
         ),
         body:  Container(
@@ -417,11 +425,25 @@ int count = 0;
                                         count++;
                                       });
 
-                                      Directory appDocDir = await getApplicationDocumentsDirectory();
-                                      String fullPath = "${appDocDir.path}/elbrit_central_task$count.$fileName";
-                                      print(fullPath);
+                                    if (await Permission.storage.request().isGranted) {
+                                      Directory? downloadsDirectory = await DownloadsPathProvider.downloadsDirectory;
+                                      String fullPath = "${downloadsDirectory!.path}/elbrit_central_task$count.$fileName";
+                                      print("fullPath ============== $fullPath");
                                       download2(dio, completePath, fullPath);
                                       print("object");
+                                    }else{
+                                      Fluttertoast.showToast(
+                                          msg: "storage permission denied",
+                                          toastLength: Toast.LENGTH_SHORT,
+                                          gravity: ToastGravity.BOTTOM,
+                                          timeInSecForIosWeb: 1,
+                                          backgroundColor: Colors.red,
+                                          textColor: Colors.white,
+                                          fontSize: 16.0
+                                      );
+                                    }
+
+
 
 
                                     },child: fileName == "pdf" ? Image.asset("images/pdf.png",height: 80,width: 80,)
