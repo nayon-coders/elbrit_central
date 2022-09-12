@@ -11,12 +11,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lottie/lottie.dart';
-import 'package:open_file/open_file.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:simple_gradient_text/simple_gradient_text.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 import 'package:video_player/video_player.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart';
@@ -423,6 +419,7 @@ int count = 0;
 
                                       Directory appDocDir = await getApplicationDocumentsDirectory();
                                       String fullPath = "${appDocDir.path}/elbrit_central_task$count.$fileName";
+                                      print(fullPath);
                                       download2(dio, completePath, fullPath);
                                       print("object");
 
