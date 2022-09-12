@@ -274,13 +274,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.6"
-  ext_storage:
+  downloads_path_provider:
     dependency: "direct main"
     description:
-      name: ext_storage
+      name: downloads_path_provider
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.3"
+    version: "0.1.0"
   extended_image:
     dependency: "direct main"
     description:
@@ -363,13 +363,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_downloader:
-    dependency: "direct main"
-    description:
-      name: flutter_downloader
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.8.3+2"
   flutter_html:
     dependency: "direct main"
     description:

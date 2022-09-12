@@ -21,10 +21,6 @@ import 'package:video_player/video_player.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:dio/dio.dart';
-import 'package:ext_storage/ext_storage.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 
@@ -424,12 +420,9 @@ int count = 0;
                                       setState((){
                                         count++;
                                       });
-                                      String path =
-                                      await ExtStorage.getExternalStoragePublicDirectory(
-                                          ExtStorage.DIRECTORY_DOWNLOADS);
 
-
-                                      String fullPath = "$path/elbrit_central_task$count.$fileName";
+                                      Directory appDocDir = await getApplicationDocumentsDirectory();
+                                      String fullPath = "${appDocDir.path}/elbrit_central_task$count.$fileName";
                                       download2(dio, completePath, fullPath);
                                       print("object");
 
