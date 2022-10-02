@@ -133,8 +133,8 @@ class _ProductPageState extends State<ProductPage> {
                                   picture:
                                   "http://admin.elbrit.org/uploads/carton/${productModels[index].cartonImage!}",
                                   title: productModels[index].productName!,
-                                  brandPromo: productModels[index].others!,
-                                  medicineName: productModels[index].labelClaim!,
+                                  brandPromo: productModels[index].others != null ? productModels[index].others! : "",
+                                  medicineName: productModels[index].labelClaim != null ? productModels[index].labelClaim! : "",
                                 ),
                                 onTap: () {
                                   Navigator.push(
