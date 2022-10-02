@@ -23,8 +23,10 @@ class LogInPage extends StatefulWidget {
 }
 
 class _LogInPageState extends State<LogInPage> {
+  static OneSignal? _instance;
   final GlobalKey<ScaffoldState> _scaffoldkey = GlobalKey<ScaffoldState>();
   bool isLoading = false;
+
   // EmployeeModel? employeeModel;
   @override
   void initState() {
@@ -32,6 +34,11 @@ class _LogInPageState extends State<LogInPage> {
     // check_if_already_login();
     // getEmployeeInfo();
     _Controller.text = "+91";
+
+    _instance?.promptUserForPushNotificationPermission().then((accepted) {
+      print("Accepted permission: $accepted");
+    });
+
   }
 
   final TextEditingController _Controller = TextEditingController();
@@ -43,11 +50,17 @@ class _LogInPageState extends State<LogInPage> {
         key: _scaffoldkey,
         // resizeToAvoidBottomInset: false,
         body: Container(
-          width: MediaQuery.of(context).size.width,
+          width: MediaQuery
+              .of(context)
+              .size
+              .width,
           child: Stack(
             children: [
               Container(
-                width: MediaQuery.of(context).size.width,
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width,
                 color: const Color(0xffF8FAFC),
                 child: Column(
                   children: [
@@ -86,7 +99,10 @@ class _LogInPageState extends State<LogInPage> {
               Positioned(
                 bottom: 0,
                 child: Container(
-                  width: MediaQuery.of(context).size.width,
+                  width: MediaQuery
+                      .of(context)
+                      .size
+                      .width,
                   height: 300,
                   decoration: const BoxDecoration(
                       color: Color(0xffFFFFFF),
@@ -172,7 +188,7 @@ class _LogInPageState extends State<LogInPage> {
                                 ),
                                 focusedBorder: const OutlineInputBorder(
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(10.0)),
+                                  BorderRadius.all(Radius.circular(10.0)),
                                   borderSide: BorderSide(
                                     color: Color(0xffEFF3F8),
                                   ),
@@ -190,19 +206,21 @@ class _LogInPageState extends State<LogInPage> {
                               text: 'Get OTP',
                               disabled: false,
                               onTap: () async {
-                               
                                 setState(() {
                                   isLoading = true;
                                 });
                                 FocusScope.of(context).unfocus();
                                 final EmployeeModel? employeeModel = await Api()
                                     .getEmployeeData(
-                                        mobileNo: _Controller.text);
+                                    mobileNo: _Controller.text);
                                 print(employeeModel!.name);
-                                final localDatabase = await SharedPreferences.getInstance();
-                                var userID = localDatabase.setString("userId", employeeModel!.id.toString());
+                                final localDatabase = await SharedPreferences
+                                    .getInstance();
+                                var userID = localDatabase.setString(
+                                    "userId", employeeModel!.id.toString());
                                 print("User id: ${employeeModel!.id}");
-                                print(">>>>>>>>>>>>>>ok got it<<<<<<<<<<<<<<<<<<<");
+                                print(
+                                    ">>>>>>>>>>>>>>ok got it<<<<<<<<<<<<<<<<<<<");
 
                                 initOneSignal(context, employeeModel!.id);
 
@@ -211,11 +229,13 @@ class _LogInPageState extends State<LogInPage> {
                                   //final provider=Provider.of<VerifiedEmployeeDataViewModel>(context,listen: false);
                                   //provider.setTeamId(int.parse(employeeModel.team!.id.toString()));
                                   //print(provider.teamId);
-                                  datosusuario=employeeModel.team!.id;
-                                  datosusuarioPhone=_Controller.text;
+                                  datosusuario = employeeModel.team!.id;
+                                  datosusuarioPhone = _Controller.text;
                                   //GlobalData().setId(employeeModel.team!.id);
-                                  print("Team ID"+employeeModel.team!.id.toString());
-                                  print(">>>>>>>>>>>>>>ok got it<<<<<<<<<<<<<<<<<<<");
+                                  print("Team ID" +
+                                      employeeModel.team!.id.toString());
+                                  print(
+                                      ">>>>>>>>>>>>>>ok got it<<<<<<<<<<<<<<<<<<<");
 
                                   ScaffoldMessenger.of(context)
                                       .showSnackBar(const SnackBar(
@@ -285,11 +305,14 @@ class _LogInPageState extends State<LogInPage> {
   //=========== Notification =================
   static final String onsignalKey = "cf556de0-b091-492b-8a02-02f742d5bdab";
 
-   String? osUserID;
+  String? osUserID;
+
   Future<void> initOneSignal(BuildContext context, userID) async {
+
 
     /// Set App Id.
     await OneSignal.shared.setAppId(onsignalKey);
+
 
     /// Get the Onesignal userId and update that into the firebase.
     /// So, that it can be used to send Notifications to users later.̥
@@ -301,58 +324,58 @@ class _LogInPageState extends State<LogInPage> {
     print("The user id ======================= $userID");
     print("player_id ======================= $osUserID");
     //send devide token
-    var response = await http.post(Uri.parse("https://admin.elbrit.org/api/updateToken"),
-        body: {
-          "player_id" : osUserID.toString(),
-          "userId" : userID.toString(),
-        }
-    );
-    print("Status code ================= ${response.statusCode}");
-
-    if(response.statusCode == 200){
-      Fluttertoast.showToast(
-          msg: "Your push notification is ON",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.green,
-          textColor: Colors.white,
-          fontSize: 16.0
+    if (osUserID != null && osUserID != "null") {
+      var response = await http.post(
+          Uri.parse("https://admin.elbrit.org/api/updateToken"),
+          body: {
+            "player_id": osUserID.toString(),
+            "userId": userID.toString(),
+          }
       );
-      print("Send device token ====================== $osUserID");
-    }else{
-      print("something went wearing");
+      print("Status code ================= ${response.statusCode}");
+
+      if (response.statusCode == 200) {
+        Fluttertoast.showToast(
+            msg: "Push notification is ON",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green,
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
+        print("Send device token ====================== $osUserID");
+      } else {
+        print("Push notification is OFF");
+        Fluttertoast.showToast(
+            msg: "Your push notification isn't ON",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
+      }
+    } else {
       Fluttertoast.showToast(
-          msg: "Your push notification isn't ON",
+          msg: "Device ID is Null. You can't get Notification",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
+          timeInSecForIosWeb: 4,
           backgroundColor: Colors.red,
           textColor: Colors.white,
           fontSize: 16.0
       );
     }
 
-    // The promptForPushNotificationsWithUserResponse function will show the iOS push notification prompt. We recommend removing the following code and instead using an In-App Message to prompt for notification permission
-    await OneSignal.shared.promptUserForPushNotificationPermission(
-      fallbackToSettings: true,
-    );
 
+    sendData(userID) async {
 
-    //
-    // /// Calls when foreground notification arrives.
-    // OneSignal.shared.setNotificationWillShowInForegroundHandler(handleForegroundNotifications,
-    // );
-    //
-    // /// Calls when the notification opens the app.
-    // OneSignal.shared.setNotificationOpenedHandler(handleBackgroundNotification);
-  }
+    }
 
-  sendData(userID) async{
-
-  }
-
-  handleForegroundNotifications() {
-    return null;
+    handleForegroundNotifications() {
+      return null;
+    }
   }
 }

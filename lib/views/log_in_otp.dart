@@ -1,14 +1,12 @@
 import 'package:elbrit_central/components/button.dart';
-
 import 'package:elbrit_central/views/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 import 'package:flutter/material.dart';
-
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mvc_application/view.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:pinput/pin_put/pin_put.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LogInOtpPage extends StatefulWidget {
   final String phone;
@@ -32,6 +30,8 @@ class _LogInOtpPageState extends State<LogInOtpPage> {
   );
 
   ConnectivityResult result = ConnectivityResult.none;
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +125,9 @@ class _LogInOtpPageState extends State<LogInOtpPage> {
                           .signInWithCredential(PhoneAuthProvider.credential(
                               verificationId: _verificationCode, smsCode: pin))
                           .then((value) async {
+                        SharedPreferences localDatabase = await SharedPreferences.getInstance();
                         if (value.user != null) {
+                          localDatabase.setString("daily_login", "${DateTime.now().day}");
                           //========= onesignal ==========
                           //========= onesignal ==========
                           Navigator.pushAndRemoveUntil(
@@ -151,6 +153,9 @@ class _LogInOtpPageState extends State<LogInOtpPage> {
   }
 
   _verifyPhone() async {
+    //Shared Local Database
+    SharedPreferences localDatabase = await SharedPreferences.getInstance();
+
     await FirebaseAuth.instance.verifyPhoneNumber(
       phoneNumber: '${widget.phone}',
       verificationCompleted: (PhoneAuthCredential credential) async {
@@ -169,11 +174,13 @@ class _LogInOtpPageState extends State<LogInOtpPage> {
       codeSent: (verificationId, forceResendingToken) {
         setState(() {
           _verificationCode = verificationId;
+          localDatabase.setString("daily_login", "1");
         });
       },
       codeAutoRetrievalTimeout: (verificationID) {
         setState(() {
           _verificationCode = verificationID;
+          localDatabase.setString("daily_login", "1");
         });
       },
     );

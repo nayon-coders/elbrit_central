@@ -12,6 +12,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
@@ -65,7 +66,36 @@ class _WallPageState extends State<WallPage> {
 
     getWallData = getWallDataMethod();
     getWallDataMethod();
+   // nofiFication();
   }
+
+  // //get alert for notification
+  // nofiFication(){
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         content: SingleChildScrollView(
+  //             child: Column(
+  //               children: [
+  //                 Text("This app want to send push notification."),
+  //                 SizedBox(height: 10,),
+  //                 Divider(height: 1, color: Colors.grey.shade300,),
+  //                 SizedBox(height: 10,),
+  //                 TextButton(
+  //                   onPressed: ()=>initOneSignal(context, 19),
+  //                   child: Center(
+  //                     child: Text("Allow"),
+  //                   ),
+  //                 )
+  //               ],
+  //             )
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
+
   var downloadPreogres;
 
   //get storage permission
@@ -616,6 +646,83 @@ int count = 0;
         textColor: Colors.white,
         fontSize: 16.0
     );
+  }
+
+  //=========== Notification =================
+  static final String onsignalKey = "cf556de0-b091-492b-8a02-02f742d5bdab";
+
+  String? osUserID;
+
+  Future<void> initOneSignal(BuildContext context, userID) async {
+
+
+    /// Set App Id.
+    await OneSignal.shared.setAppId(onsignalKey);
+
+
+    /// Get the Onesignal userId and update that into the firebase.
+    /// So, that it can be used to send Notifications to users later.̥
+    final status = await OneSignal.shared.getDeviceState();
+    osUserID = status?.userId;
+    // We will update this once he logged in and goes to dashboard.
+    ////updateUserProfile(osUserID);
+    // Store it into shared prefs, So that later we can use it.
+    print("The user id ======================= $userID");
+    print("player_id ======================= $osUserID");
+    //send devide token
+    if (osUserID != null && osUserID != "null") {
+      var response = await http.post(
+          Uri.parse("https://admin.elbrit.org/api/updateToken"),
+          body: {
+            "player_id": osUserID.toString(),
+            "userId": userID.toString(),
+          }
+      );
+      print("Status code ================= ${response.statusCode}");
+
+      if (response.statusCode == 200) {
+        Fluttertoast.showToast(
+            msg: "Push notification is ON",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green,
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
+        print("Send device token ====================== $osUserID");
+      } else {
+        print("Push notification is OFF");
+        Fluttertoast.showToast(
+            msg: "Your push notification isn't ON",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
+      }
+    } else {
+      Fluttertoast.showToast(
+          msg: "Device ID is Null. You can't get Notification",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 4,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
+    }
+
+
+    sendData(userID) async {
+
+    }
+
+    handleForegroundNotifications() {
+      return null;
+    }
   }
 
 

@@ -1,6 +1,7 @@
 
 import 'package:elbrit_central/views/login.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_switch/flutter_switch.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../main.dart';
@@ -19,6 +20,8 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  bool status = false;
+
 
   EmployeeModel? employeeModel;
 
@@ -296,6 +299,39 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                 ),
+                // const SizedBox(height: 4),
+                // Container(
+                //   height: 52,
+                //   color: const Color(0xffFFFFFF),
+                //   child: Padding(
+                //     padding: const EdgeInsets.all(8.0),
+                //     child: Row(
+                //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //       children: [
+                //         Text(
+                //           'Notification',
+                //           style: TextStyle(
+                //               fontSize: 16, fontWeight: FontWeight.w400),
+                //         ),
+                //         FlutterSwitch(
+                //           width: 70.0,
+                //           height: 40.0,
+                //           valueFontSize: 12.0,
+                //           toggleSize: 30.0,
+                //           value: status,
+                //           borderRadius: 30.0,
+                //           padding: 5.0,
+                //           showOnOff: false,
+                //           onToggle: (val) {
+                //             setState(() {
+                //               status = val;
+                //             });
+                //           },
+                //         ),
+                //       ],
+                //     ),
+                //   ),
+                // ),
                 const SizedBox(
                   height: 40,
                 ),

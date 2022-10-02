@@ -41,7 +41,7 @@ class _NotificationPageState extends State<NotificationPage> {
       //print(json["data"].toString());
       //getWalldataList = json["data"].toString();
       //print(getWalldataList);
-      print(data["data"]);
+      print("data is ================== ${data["data"]}");
       return data["data"];
     } else {
       throw Exception('Failed to load data');
@@ -114,7 +114,7 @@ class _NotificationPageState extends State<NotificationPage> {
                         print("====================");
                         //print(snapshot.data);
                         print("====================");
-                        if(snapshot.data == 0) {
+                        if(snapshot.data.length == 1) {
                           return const Padding(
                             padding: EdgeInsets.only(top: 50),
                             child: Center(child: Text("No Notification"),),
