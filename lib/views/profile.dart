@@ -34,9 +34,10 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void loadProfile()async {
 
-    final employee= await Api()
-        .getEmployeeData(
-        mobileNo: datosusuarioPhone);
+    SharedPreferences db = await SharedPreferences.getInstance();
+    var phone = db.getString("phone");
+    print(phone);
+    final employee= await Api().getEmployeeData(mobileNo: phone.toString());
     setState(() {
       employeeModel=employee;
     });
@@ -132,7 +133,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               fontSize: 16, fontWeight: FontWeight.w400),
                         ),
                         Text(
-                          datosusuarioPhone,
+                          employeeModel!.mobileNo!,
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w400,

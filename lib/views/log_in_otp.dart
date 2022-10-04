@@ -2,15 +2,18 @@ import 'package:elbrit_central/components/button.dart';
 import 'package:elbrit_central/views/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mvc_application/view.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:pinput/pin_put/pin_put.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class LogInOtpPage extends StatefulWidget {
   final String phone;
-  LogInOtpPage(this.phone);
+  final String id;
+  LogInOtpPage(this.phone, this.id);
 
   @override
   State<LogInOtpPage> createState() => _LogInOtpPageState();
@@ -191,6 +194,7 @@ class _LogInOtpPageState extends State<LogInOtpPage> {
     super.initState();
     _verifyPhone();
   }
+
 
 
 }

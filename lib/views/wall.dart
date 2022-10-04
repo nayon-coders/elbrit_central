@@ -69,32 +69,6 @@ class _WallPageState extends State<WallPage> {
    // nofiFication();
   }
 
-  // //get alert for notification
-  // nofiFication(){
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return AlertDialog(
-  //         content: SingleChildScrollView(
-  //             child: Column(
-  //               children: [
-  //                 Text("This app want to send push notification."),
-  //                 SizedBox(height: 10,),
-  //                 Divider(height: 1, color: Colors.grey.shade300,),
-  //                 SizedBox(height: 10,),
-  //                 TextButton(
-  //                   onPressed: ()=>initOneSignal(context, 19),
-  //                   child: Center(
-  //                     child: Text("Allow"),
-  //                   ),
-  //                 )
-  //               ],
-  //             )
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
 
   var downloadPreogres;
 

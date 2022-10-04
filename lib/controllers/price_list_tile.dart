@@ -23,7 +23,7 @@ class PriceListTile extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 5),
       child: Container(
-        height: 101,
+        padding: EdgeInsets.only(top: 5, bottom: 5),
         decoration: const BoxDecoration(
           color: Color(0xffFFFFFF),
           borderRadius: BorderRadius.all(
@@ -32,7 +32,7 @@ class PriceListTile extends StatelessWidget {
         ),
         child: Padding(
           padding:
-              const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+              const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -184,11 +184,15 @@ class PriceListTile extends StatelessWidget {
                         const SizedBox(
                           width: 4,
                         ),
-                        Text(
-                          prs,
-                          style: GoogleFonts.dmSans(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
+                        SizedBox(
+                          width: 100,
+                          child: Text(
+                            prs,
+                            overflow: TextOverflow.clip,
+                            style: GoogleFonts.dmSans(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                            ),
                           ),
                         ),
                       ],

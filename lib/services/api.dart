@@ -6,6 +6,7 @@ import 'package:elbrit_central/models/employee_info.dart';
 import 'package:elbrit_central/models/wall_info.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/io_client.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../main.dart';
 
 class Api {
@@ -24,8 +25,10 @@ class Api {
   }
 
   Future<List<WallModel>> getWallData() async {
+    SharedPreferences db = await SharedPreferences.getInstance();
+    var teamID = db.getString("teamID");
     var client = http.Client();
-    var uri = Uri.parse('http://admin.elbrit.org/api/walls/${datosusuario}');
+    var uri = Uri.parse('http://admin.elbrit.org/api/walls/${teamID}');
     //var response = await client.get(uri);
     bool trustSelfSigned = true;
     HttpClient httpClient = HttpClient()
@@ -46,10 +49,12 @@ class Api {
   }
 
   Future<List<Data>> getPriceData() async {
+    SharedPreferences db = await SharedPreferences.getInstance();
+    var teamID = db.getString("teamID");
     var client = http.Client();
     print(datosusuario);
     //var uri = Uri.parse('https://admin.elbrit.org/api/prices');
-    var uri = Uri.parse('http://admin.elbrit.org/api/prices/${datosusuario}');
+    var uri = Uri.parse('http://admin.elbrit.org/api/prices/${teamID}');
     bool trustSelfSigned = true;
     HttpClient httpClient = HttpClient()
       ..badCertificateCallback =
@@ -90,19 +95,22 @@ class Api {
   }
 
   Future<List<ProductModel>> getProducts() async {
+    SharedPreferences db = await SharedPreferences.getInstance();
+    var teamID = db.getString("teamID");
     var client = http.Client();
-    var uri = Uri.parse('http://admin.elbrit.org/api/products/${datosusuario}');
-  bool trustSelfSigned = true;
-  HttpClient httpClient = HttpClient()
-    ..badCertificateCallback =
-    ((X509Certificate cert, String host, int port) => trustSelfSigned);
-  IOClient ioClient = IOClient(httpClient);
+    var uri = Uri.parse('http://admin.elbrit.org/api/products/${teamID}');
+    print("url ========== $uri");
+      bool trustSelfSigned = true;
+      HttpClient httpClient = HttpClient()
+        ..badCertificateCallback =
+        ((X509Certificate cert, String host, int port) => trustSelfSigned);
+      IOClient ioClient = IOClient(httpClient);
 
-  //var response = await client.get(uri);
-  var response = await ioClient.get(uri);
+      var response = await client.get(uri);
+
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
-      print(json["data"].toString());
+      print("product data = ${json["data"].toString()}");
       return (json["data"] as List)
           .map<ProductModel>((i) => ProductModel.fromJson(i))
           .toList();

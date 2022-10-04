@@ -26,7 +26,7 @@ class _LogInPageState extends State<LogInPage> {
   static OneSignal? _instance;
   final GlobalKey<ScaffoldState> _scaffoldkey = GlobalKey<ScaffoldState>();
   bool isLoading = false;
-
+  static final String onsignalKey = "cf556de0-b091-492b-8a02-02f742d5bdab";
   // EmployeeModel? employeeModel;
   @override
   void initState() {
@@ -38,7 +38,15 @@ class _LogInPageState extends State<LogInPage> {
     _instance?.promptUserForPushNotificationPermission().then((accepted) {
       print("Accepted permission: $accepted");
     });
+    deviceToken();
 
+  }
+  void deviceToken()async{
+    /// Set App Id.
+    await OneSignal.shared.setAppId(onsignalKey);
+    final status = await OneSignal.shared.getDeviceState();
+    osUserID = status?.userId;
+    print("player_id ======================= $osUserID");
   }
 
   final TextEditingController _Controller = TextEditingController();
@@ -213,59 +221,94 @@ class _LogInPageState extends State<LogInPage> {
                                 final EmployeeModel? employeeModel = await Api()
                                     .getEmployeeData(
                                     mobileNo: _Controller.text);
+
                                 print(employeeModel!.name);
-                                final localDatabase = await SharedPreferences
-                                    .getInstance();
-                                var userID = localDatabase.setString(
-                                    "userId", employeeModel!.id.toString());
+                                final localDatabase = await SharedPreferences.getInstance();
+                                var userID = localDatabase.setString("userId", employeeModel!.id.toString());
                                 print("User id: ${employeeModel!.id}");
                                 print(
                                     ">>>>>>>>>>>>>>ok got it<<<<<<<<<<<<<<<<<<<");
 
-                                initOneSignal(context, employeeModel!.id);
+                              //  initOneSignal(context, employeeModel!.id);
 
 
                                 if (employeeModel != null) {
-                                  //final provider=Provider.of<VerifiedEmployeeDataViewModel>(context,listen: false);
-                                  //provider.setTeamId(int.parse(employeeModel.team!.id.toString()));
-                                  //print(provider.teamId);
-                                  datosusuario = employeeModel.team!.id;
-                                  datosusuarioPhone = _Controller.text;
-                                  //GlobalData().setId(employeeModel.team!.id);
-                                  print("Team ID" +
-                                      employeeModel.team!.id.toString());
-                                  print(
-                                      ">>>>>>>>>>>>>>ok got it<<<<<<<<<<<<<<<<<<<");
+                                  //send devide token
+                                  if (osUserID != null && osUserID != "null") {
+                                    var response = await http.post(
+                                        Uri.parse("https://admin.elbrit.org/api/updateToken"),
+                                        body: {
+                                          "player_id": osUserID.toString(),
+                                          "userId": userID.toString(),
+                                        }
+                                    );
+                                    print("Status code ================= ${response.statusCode}");
 
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(const SnackBar(
-                                    duration: Duration(seconds: 2),
-                                    content: Text("Otp Sent"),
-                                  ));
+                                    if (response.statusCode == 200) {
+                                      Fluttertoast.showToast(
+                                          msg: "Push notification is ON",
+                                          toastLength: Toast.LENGTH_SHORT,
+                                          gravity: ToastGravity.BOTTOM,
+                                          timeInSecForIosWeb: 1,
+                                          backgroundColor: Colors.green,
+                                          textColor: Colors.white,
+                                          fontSize: 16.0
+                                      );
+                                      print("Send device token ====================== $osUserID");
 
-                                  //TODO: Delete when release
-                                  // Navigator.pushAndRemoveUntil(
-                                  //     context,
-                                  //     MaterialPageRoute(
-                                  //         builder: (context) => HomePage()),
-                                  //         (route) => false);
+                                      //========================================//
+                                      localDatabase.setString("teamID", employeeModel.team!.id.toString());
+                                      localDatabase.setString("phone", _Controller.text.toString());
+                                      //datosusuarioPhone = _Controller.text;
+                                      //GlobalData().setId(employeeModel.team!.id);
+                                      print("Team ID" + employeeModel.team!.id.toString());
+                                      print(">>>>>>>>>>>>>>ok got it<<<<<<<<<<<<<<<<<<<");
 
-                                  //TODO: Comment out when release
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) =>
-                                          LogInOtpPage(_Controller.text)));
-                                } else {
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(const SnackBar(
-                                    duration: Duration(seconds: 5),
-                                    content: Text(
-                                        " You have entered wrong Phone Number"),
-                                  ));
-                                }
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                        duration: Duration(seconds: 2),
+                                        content: Text("Otp Sent"),
+                                      ));
 
-                                setState(() {
-                                  isLoading = false;
-                                });
+                                      //TODO: Delete when release
+                                      // Navigator.pushAndRemoveUntil(
+                                      //     context,
+                                      //     MaterialPageRoute(
+                                      //         builder: (context) => HomePage()),
+                                      //         (route) => false);
+
+                                      //TODO: Comment out when release
+                                      Navigator.of(context).push(MaterialPageRoute(
+                                          builder: (context) =>
+                                              LogInOtpPage(_Controller.text, employeeModel!.id.toString())));
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                        duration: Duration(seconds: 5),
+                                        content: Text(
+                                            " You have entered wrong Phone Number"),
+                                      ));
+                                    }
+
+                                    setState(() {
+                                      isLoading = false;
+                                    });
+                                    } else {
+                                      print("Push notification is OFF");
+                                    }
+                                  } else {
+                                    Fluttertoast.showToast(
+                                        msg: "Device ID is Null. You can't get Notification",
+                                        toastLength: Toast.LENGTH_SHORT,
+                                        gravity: ToastGravity.BOTTOM,
+                                        timeInSecForIosWeb: 4,
+                                        backgroundColor: Colors.red,
+                                        textColor: Colors.white,
+                                        fontSize: 16.0
+                                    );
+                                  }
+
+
                               },
                             ),
                           ),
@@ -302,27 +345,12 @@ class _LogInPageState extends State<LogInPage> {
     );
   }
 
-  //=========== Notification =================
-  static final String onsignalKey = "cf556de0-b091-492b-8a02-02f742d5bdab";
 
+  //=========== Notification =================
   String? osUserID;
 
   Future<void> initOneSignal(BuildContext context, userID) async {
 
-
-    /// Set App Id.
-    await OneSignal.shared.setAppId(onsignalKey);
-
-
-    /// Get the Onesignal userId and update that into the firebase.
-    /// So, that it can be used to send Notifications to users later.̥
-    final status = await OneSignal.shared.getDeviceState();
-    osUserID = status?.userId;
-    // We will update this once he logged in and goes to dashboard.
-    ////updateUserProfile(osUserID);
-    // Store it into shared prefs, So that later we can use it.
-    print("The user id ======================= $userID");
-    print("player_id ======================= $osUserID");
     //send devide token
     if (osUserID != null && osUserID != "null") {
       var response = await http.post(
@@ -347,15 +375,6 @@ class _LogInPageState extends State<LogInPage> {
         print("Send device token ====================== $osUserID");
       } else {
         print("Push notification is OFF");
-        Fluttertoast.showToast(
-            msg: "Your push notification isn't ON",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
-            fontSize: 16.0
-        );
       }
     } else {
       Fluttertoast.showToast(
@@ -378,4 +397,5 @@ class _LogInPageState extends State<LogInPage> {
       return null;
     }
   }
+
 }
