@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mvc_application/view.dart';
-import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:pinput/pin_put/pin_put.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:get/get.dart';
 
 class LogInOtpPage extends StatefulWidget {
   final String phone;
@@ -143,7 +143,7 @@ class _LogInOtpPageState extends State<LogInOtpPage> {
                     } catch (e) {
                       FocusScope.of(context).unfocus();
                       _scaffoldkey.currentState?.showSnackBar(
-                          SnackBar(content: Text('invalid OTP')));
+                          SnackBar(content: const Text('invalid OTP')));
                     }
                   },
                 ),
@@ -192,9 +192,40 @@ class _LogInOtpPageState extends State<LogInOtpPage> {
   @override
   void initState() {
     super.initState();
+    checkNotificationIsSet();
     _verifyPhone();
   }
 
+
+  void checkNotificationIsSet() async{
+    SharedPreferences localDatabase = await SharedPreferences.getInstance();
+    print(localDatabase.getInt("device_token"));
+    if(localDatabase.getInt('device_token') == 1 && localDatabase.getInt("set_push") != 1) {
+      Get.defaultDialog(
+        barrierDismissible: false,
+        title: "Notification",
+        contentPadding: EdgeInsets.only(left: 20, right: 20, top: 20),
+        content: SingleChildScrollView(
+          child: Column(
+            children: [
+              Text("This app want to send you Notification.", textAlign: TextAlign.center,),
+              SizedBox(height: 5,),
+              Divider(height: 1, color: Colors.grey.shade300,),
+              SizedBox(height: 5,),
+              TextButton(
+                onPressed: (){
+                  localDatabase.setInt("set_push", 1);
+                  Navigator.pop(context);
+                },
+                child: const Text("Allow"),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+    return;
+  }
 
 
 }

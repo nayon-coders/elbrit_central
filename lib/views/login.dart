@@ -1,4 +1,5 @@
 import 'dart:isolate';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:elbrit_central/components/button.dart';
 import 'package:elbrit_central/models/employee_info.dart';
@@ -6,11 +7,10 @@ import 'package:elbrit_central/services/api.dart';
 import 'package:elbrit_central/views/home.dart';
 
 import 'package:elbrit_central/views/log_in_otp.dart';
-
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:elbrit_central/main.dart';
@@ -23,30 +23,29 @@ class LogInPage extends StatefulWidget {
 }
 
 class _LogInPageState extends State<LogInPage> {
-  static OneSignal? _instance;
   final GlobalKey<ScaffoldState> _scaffoldkey = GlobalKey<ScaffoldState>();
   bool isLoading = false;
-  static final String onsignalKey = "cf556de0-b091-492b-8a02-02f742d5bdab";
+
   // EmployeeModel? employeeModel;
+  String? deviceTokenToSendPushNotification;
   @override
   void initState() {
     super.initState();
     // check_if_already_login();
     // getEmployeeInfo();
+
     _Controller.text = "+91";
 
-    _instance?.promptUserForPushNotificationPermission().then((accepted) {
-      print("Accepted permission: $accepted");
-    });
-    deviceToken();
+    getDeviceTokenToSendNotification();
 
   }
-  void deviceToken()async{
-    /// Set App Id.
-    await OneSignal.shared.setAppId(onsignalKey);
-    final status = await OneSignal.shared.getDeviceState();
-    osUserID = status?.userId;
-    print("player_id ======================= $osUserID");
+
+
+  Future<void> getDeviceTokenToSendNotification() async {
+    final FirebaseMessaging _fcm = FirebaseMessaging.instance;
+    final token = await _fcm.getToken();
+    deviceTokenToSendPushNotification = token.toString();
+    print("Token Value $deviceTokenToSendPushNotification");
   }
 
   final TextEditingController _Controller = TextEditingController();
@@ -234,31 +233,22 @@ class _LogInPageState extends State<LogInPage> {
 
                                 if (employeeModel != null) {
                                   //send devide token
-                                  if (osUserID != null && osUserID != "null") {
+                                  if (deviceTokenToSendPushNotification != null && deviceTokenToSendPushNotification != "null") {
                                     var response = await http.post(
                                         Uri.parse("https://admin.elbrit.org/api/updateToken"),
                                         body: {
-                                          "player_id": osUserID.toString(),
+                                          "player_id": deviceTokenToSendPushNotification.toString(),
                                           "userId": userID.toString(),
                                         }
                                     );
                                     print("Status code ================= ${response.statusCode}");
 
                                     if (response.statusCode == 200) {
-                                      Fluttertoast.showToast(
-                                          msg: "Push notification is ON",
-                                          toastLength: Toast.LENGTH_SHORT,
-                                          gravity: ToastGravity.BOTTOM,
-                                          timeInSecForIosWeb: 1,
-                                          backgroundColor: Colors.green,
-                                          textColor: Colors.white,
-                                          fontSize: 16.0
-                                      );
-                                      print("Send device token ====================== $osUserID");
-
+                                      print("Send device token Success ====================== $deviceTokenToSendPushNotification");
                                       //========================================//
                                       localDatabase.setString("teamID", employeeModel.team!.id.toString());
                                       localDatabase.setString("phone", _Controller.text.toString());
+                                      localDatabase.setInt("device_token", 1);
                                       //datosusuarioPhone = _Controller.text;
                                       //GlobalData().setId(employeeModel.team!.id);
                                       print("Team ID" + employeeModel.team!.id.toString());
@@ -296,18 +286,11 @@ class _LogInPageState extends State<LogInPage> {
                                     } else {
                                       print("Push notification is OFF");
                                     }
-                                  } else {
-                                    Fluttertoast.showToast(
-                                        msg: "Device ID is Null. You can't get Notification",
-                                        toastLength: Toast.LENGTH_SHORT,
-                                        gravity: ToastGravity.BOTTOM,
-                                        timeInSecForIosWeb: 4,
-                                        backgroundColor: Colors.red,
-                                        textColor: Colors.white,
-                                        fontSize: 16.0
-                                    );
-                                  }
 
+                                  }
+                                setState(() {
+                                  isLoading = false;
+                                });
 
                               },
                             ),

@@ -12,7 +12,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
@@ -20,6 +19,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:get/get.dart';
+
 
 
 
@@ -50,6 +51,7 @@ class _WallPageState extends State<WallPage> {
     "images/csv.jpeg",
     "images/xl.png",
   ];
+
   @override
   void initState() {
     super.initState();
@@ -588,7 +590,7 @@ int count = 0;
        isStartDownload = true;
     });
     try {
-      Response response = await dio.get(
+      final response = await dio.get(
         url,
        // onReceiveProgress: showDownloadProgress,
         //Received data with List<int>
@@ -621,83 +623,83 @@ int count = 0;
         fontSize: 16.0
     );
   }
-
-  //=========== Notification =================
-  static final String onsignalKey = "cf556de0-b091-492b-8a02-02f742d5bdab";
-
-  String? osUserID;
-
-  Future<void> initOneSignal(BuildContext context, userID) async {
-
-
-    /// Set App Id.
-    await OneSignal.shared.setAppId(onsignalKey);
-
-
-    /// Get the Onesignal userId and update that into the firebase.
-    /// So, that it can be used to send Notifications to users later.̥
-    final status = await OneSignal.shared.getDeviceState();
-    osUserID = status?.userId;
-    // We will update this once he logged in and goes to dashboard.
-    ////updateUserProfile(osUserID);
-    // Store it into shared prefs, So that later we can use it.
-    print("The user id ======================= $userID");
-    print("player_id ======================= $osUserID");
-    //send devide token
-    if (osUserID != null && osUserID != "null") {
-      var response = await http.post(
-          Uri.parse("https://admin.elbrit.org/api/updateToken"),
-          body: {
-            "player_id": osUserID.toString(),
-            "userId": userID.toString(),
-          }
-      );
-      print("Status code ================= ${response.statusCode}");
-
-      if (response.statusCode == 200) {
-        Fluttertoast.showToast(
-            msg: "Push notification is ON",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.green,
-            textColor: Colors.white,
-            fontSize: 16.0
-        );
-        print("Send device token ====================== $osUserID");
-      } else {
-        print("Push notification is OFF");
-        Fluttertoast.showToast(
-            msg: "Your push notification isn't ON",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
-            fontSize: 16.0
-        );
-      }
-    } else {
-      Fluttertoast.showToast(
-          msg: "Device ID is Null. You can't get Notification",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 4,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0
-      );
-    }
-
-
-    sendData(userID) async {
-
-    }
-
-    handleForegroundNotifications() {
-      return null;
-    }
-  }
+  //
+  // //=========== Notification =================
+  // static final String onsignalKey = "cf556de0-b091-492b-8a02-02f742d5bdab";
+  //
+  // String? osUserID;
+  //
+  // Future<void> initOneSignal(BuildContext context, userID) async {
+  //
+  //
+  //   /// Set App Id.
+  //   await OneSignal.shared.setAppId(onsignalKey);
+  //
+  //
+  //   /// Get the Onesignal userId and update that into the firebase.
+  //   /// So, that it can be used to send Notifications to users later.̥
+  //   final status = await OneSignal.shared.getDeviceState();
+  //   osUserID = status?.userId;
+  //   // We will update this once he logged in and goes to dashboard.
+  //   ////updateUserProfile(osUserID);
+  //   // Store it into shared prefs, So that later we can use it.
+  //   print("The user id ======================= $userID");
+  //   print("player_id ======================= $osUserID");
+  //   //send devide token
+  //   if (osUserID != null && osUserID != "null") {
+  //     var response = await http.post(
+  //         Uri.parse("https://admin.elbrit.org/api/updateToken"),
+  //         body: {
+  //           "player_id": osUserID.toString(),
+  //           "userId": userID.toString(),
+  //         }
+  //     );
+  //     print("Status code ================= ${response.statusCode}");
+  //
+  //     if (response.statusCode == 200) {
+  //       Fluttertoast.showToast(
+  //           msg: "Push notification is ON",
+  //           toastLength: Toast.LENGTH_SHORT,
+  //           gravity: ToastGravity.BOTTOM,
+  //           timeInSecForIosWeb: 1,
+  //           backgroundColor: Colors.green,
+  //           textColor: Colors.white,
+  //           fontSize: 16.0
+  //       );
+  //       print("Send device token ====================== $osUserID");
+  //     } else {
+  //       print("Push notification is OFF");
+  //       Fluttertoast.showToast(
+  //           msg: "Your push notification isn't ON",
+  //           toastLength: Toast.LENGTH_SHORT,
+  //           gravity: ToastGravity.BOTTOM,
+  //           timeInSecForIosWeb: 1,
+  //           backgroundColor: Colors.red,
+  //           textColor: Colors.white,
+  //           fontSize: 16.0
+  //       );
+  //     }
+  //   } else {
+  //     Fluttertoast.showToast(
+  //         msg: "Device ID is Null. You can't get Notification",
+  //         toastLength: Toast.LENGTH_SHORT,
+  //         gravity: ToastGravity.BOTTOM,
+  //         timeInSecForIosWeb: 4,
+  //         backgroundColor: Colors.red,
+  //         textColor: Colors.white,
+  //         fontSize: 16.0
+  //     );
+  //   }
+  //
+  //
+  //   sendData(userID) async {
+  //
+  //   }
+  //
+  //   handleForegroundNotifications() {
+  //     return null;
+  //   }
+  // }
 
 
 

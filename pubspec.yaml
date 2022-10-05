@@ -9,7 +9,7 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
-  mvc_application: ^8.4.1
+  mvc_application: ^7.10.0
   google_fonts: ^2.3.0
   simple_gradient_text: ^1.2.3
   material_design_icons_flutter: ^5.0.6595
@@ -31,13 +31,12 @@ dependencies:
   video_player: ^2.4.5
   shared_preferences: ^2.0.15
   flutter_html: ^3.0.0-alpha.5
-  onesignal_flutter: ^3.4.1
   open_file: any
   url_launcher: ^6.1.5
   fluttertoast: ^8.0.8
   permission_handler: ^10.0.0
   get: any
-  flutter_local_notifications: ^9.2.0
+  flutter_local_notifications: any
 
 
 
@@ -46,6 +45,7 @@ dependencies:
   flutter_switch: ^0.3.2
   intl: ^0.17.0
   firebase_messaging: ^13.0.4
+  firebase_analytics: ^9.3.7
 
 
 dev_dependencies:
