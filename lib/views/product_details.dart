@@ -24,6 +24,7 @@ class _ProductDetailsState extends State<ProductDetails> {
   bool isLoading = false;
 
   late ProductModel productModels;
+  String levelName = "no image";
   @override
   void initState() {
     super.initState();
@@ -37,8 +38,19 @@ class _ProductDetailsState extends State<ProductDetails> {
     });
     print(id);
     productModels = await Api().getProductData(id: id);
-    print(productModels);
+    print("productModels ========================= $productModels");
     setState(() {
+      // if(productModels.cartonImage != null ){
+      //   levelName = "Carton Image";
+      // }else if(productModels.logoImage != null ){
+      //   levelName = "Logo Image";
+      // }else if(productModels.stripImage != null){
+      //   levelName = "Strip Image";
+      // }else if(productModels.tabletImage != null){
+      //   levelName = "Table Image";
+      // }else{
+      //   levelName = "Image";
+      // }
       isLoading = false;
     });
   }
@@ -79,50 +91,155 @@ class _ProductDetailsState extends State<ProductDetails> {
                             width: double.infinity,
                             child: CarouselSlider(
                               items: [
+                                productModels.logoImage != null
+                                    ? Stack(
+                                  children: [
+                                    ExtendedImage.network(
+                                      "http://admin.elbrit.org/uploads/logo/${productModels.logoImage!}",
+                                      width: double.infinity,
+                                      // productModels[0].tabletImage![0],
+                                      fit: BoxFit.contain,
+                                    ),
+                                    Positioned(
+                                      bottom: 0,
+                                      left: 0,
+                                      right: 0,
+                                      child: Container(
+                                        padding: EdgeInsets.only(left: 20),
+                                        color: Color(0xff191919).withOpacity(.6),
+                                        height: 48,
+                                        width: MediaQuery.of(context).size.width,
+                                        child: Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            "Logo Image",
+                                            style: GoogleFonts.dmSans(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w800,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )
+                                    : Image.asset(
+                                  'images/img_7.jpg',
+                                  fit: BoxFit.cover,
+                                ),
                                 productModels.cartonImage != null
-                                    ? ExtendedImage.network(
-                                        "http://admin.elbrit.org/uploads/carton/${productModels.cartonImage!}",
-
-                                        // productModels[0].tabletImage![0],
-                                        fit: BoxFit.cover,
-                                      )
+                                    ? Stack(
+                                      children: [
+                                        ExtendedImage.network(
+                                            "http://admin.elbrit.org/uploads/carton/${productModels.cartonImage!}",
+                                          width: double.infinity,
+                                            // productModels[0].tabletImage![0],
+                                            fit: BoxFit.contain,
+                                          ),
+                                        Positioned(
+                                          bottom: 0,
+                                          left: 0,
+                                          right: 0,
+                                          child: Container(
+                                            padding: EdgeInsets.only(left: 20),
+                                            color: Color(0xff191919).withOpacity(.6),
+                                            height: 48,
+                                            width: MediaQuery.of(context).size.width,
+                                            child: Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Text(
+                                                "Carton Image",
+                                                style: GoogleFonts.dmSans(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w800,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    )
                                     : Image.asset(
                                         'images/img_7.jpg',
                                         fit: BoxFit.cover,
                                       ),
-                                productModels.cartonImage != null
-                                    ? ExtendedImage.network(
-                                        "http://admin.elbrit.org/uploads/strip/${productModels.stripImage!}",
-
-                                        // productModels[0].tabletImage![0],
-                                        fit: BoxFit.cover,
-                                      )
+                                productModels.stripImage != null
+                                    ? Stack(
+                                  children: [
+                                    ExtendedImage.network(
+                                      "http://admin.elbrit.org/uploads/strip/${productModels.stripImage!}",
+                                      width: double.infinity,
+                                      // productModels[0].tabletImage![0],
+                                      fit: BoxFit.contain,
+                                    ),
+                                    Positioned(
+                                      bottom: 0,
+                                      left: 0,
+                                      right: 0,
+                                      child: Container(
+                                        padding: EdgeInsets.only(left: 20),
+                                        color: Color(0xff191919).withOpacity(.6),
+                                        height: 48,
+                                        width: MediaQuery.of(context).size.width,
+                                        child: Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            "Strip Image",
+                                            style: GoogleFonts.dmSans(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w800,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )
                                     : Image.asset(
                                         'images/img_8.jpg',
                                         fit: BoxFit.cover,
                                       ),
-                                productModels.cartonImage != null
-                                    ? ExtendedImage.network(
-                                        "http://admin.elbrit.org/uploads/tablet/${productModels.tabletImage!}",
-
-                                        // productModels[0].tabletImage![0],
-                                        fit: BoxFit.cover,
-                                      )
+                                productModels.tabletImage != null
+                                    ? Stack(
+                                  children: [
+                                    ExtendedImage.network(
+                                      "http://admin.elbrit.org/uploads/tablet/${productModels.tabletImage!}",
+                                      width: double.infinity,
+                                      // productModels[0].tabletImage![0],
+                                      fit: BoxFit.contain,
+                                    ),
+                                    Positioned(
+                                      bottom: 0,
+                                      left: 0,
+                                      right: 0,
+                                      child: Container(
+                                        padding: EdgeInsets.only(left: 20),
+                                        color: Color(0xff191919).withOpacity(.6),
+                                        height: 48,
+                                        width: MediaQuery.of(context).size.width,
+                                        child: Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            "Tablet Image",
+                                            style: GoogleFonts.dmSans(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w800,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )
                                     : Image.asset(
                                         'images/img_9.jpg',
                                         fit: BoxFit.cover,
                                       ),
-                                productModels.cartonImage != null
-                                    ? ExtendedImage.network(
-                                        "http://admin.elbrit.org/uploads/logo/${productModels.logoImage!}",
 
-                                        // productModels[0].tabletImage![0],
-                                        fit: BoxFit.cover,
-                                      )
-                                    : Image.asset(
-                                        'images/img_7.jpg',
-                                        fit: BoxFit.cover,
-                                      ),
                               ],
                               options: CarouselOptions(
                                 autoPlay: true,
@@ -131,130 +248,189 @@ class _ProductDetailsState extends State<ProductDetails> {
                               ),
                             ),
                           ),
-                          Positioned(
-                            bottom: 0,
-                            child: Container(
-                              padding: EdgeInsets.only(left: 20),
-                              color: Color(0xff191919).withOpacity(.6),
-                              height: 48,
-                              width: MediaQuery.of(context).size.width,
-                              child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  'Tablet Image',
-                                  style: GoogleFonts.dmSans(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w800,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
+                          // Positioned(
+                          //   bottom: 0,
+                          //   child: Container(
+                          //     padding: EdgeInsets.only(left: 20),
+                          //     color: Color(0xff191919).withOpacity(.6),
+                          //     height: 48,
+                          //     width: MediaQuery.of(context).size.width,
+                          //     child: Align(
+                          //       alignment: Alignment.centerLeft,
+                          //       child: Text(
+                          //         levelName,
+                          //         style: GoogleFonts.dmSans(
+                          //           fontSize: 14,
+                          //           fontWeight: FontWeight.w800,
+                          //           color: Colors.white,
+                          //         ),
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
                         ],
                       ),
-                      Padding(
-                        padding:
-                            const EdgeInsets.only(left: 20, right: 20, top: 15),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          child: SingleChildScrollView(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  productModels.productName != null
-                                      ? productModels.productName!
-                                      : 'TELBRIT',
-                                  style: GoogleFonts.dmSans(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w400,
-                                    color: const Color(0xff262930),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                Text(
-                                  productModels.productUniqueness != null
-                                      ? productModels.productUniqueness!
-                                      : 'Uniqueness of the product:',
-                                  style: GoogleFonts.dmSans(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w400,
-                                      color: const Color(0xff8394AA)),
-                                ),
-                                const SizedBox(
-                                  height: 3,
-                                ),
-                                Text(
-                                  productModels.others != null
-                                      ? productModels.others!
-                                      : 'The only brand that has ALA 200mg.',
-                                  style: GoogleFonts.dmSans(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w400,
-                                      color: const Color(0xff191919)),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Text(
-                                  'Type of Product:',
-                                  style: GoogleFonts.dmSans(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w400,
-                                      color: const Color(0xff8394AA)),
-                                ),
-                                const SizedBox(
-                                  height: 3,
-                                ),
-                                Text(
-                                  productModels.others != null
-                                      ? productModels.others!
-                                      : 'Medicine',
-                                  style: GoogleFonts.dmSans(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w400,
-                                      color: const Color(0xff191919)),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Text(
-                                  'Label Claim:',
-                                  style: GoogleFonts.dmSans(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w400,
-                                      color: const Color(0xff8394AA)),
-                                ),
 
-                                const SizedBox(
-                                  height: 3,
-                                ),
-                                Text(
-                                  productModels.labelClaim != null
-                                      ? productModels.labelClaim!
-                                      : 'Medicine',
-                                  style: GoogleFonts.dmSans(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w400,
-                                      color: const Color(0xff191919)),
-                                ),
-                                // ListView.builder(
-                                //     physics: const NeverScrollableScrollPhysics(),
-                                //     shrinkWrap: true,
-                                //     itemCount: titles.length,
-                                //     itemBuilder: (context, index) {
-                                //       return TextTile(
-                                //           title: productModels[0].labelClaim!);
-                                //     }),
-                              ],
+
+                      Padding(
+                        padding: EdgeInsets.all(20),
+                        child: Column(
+                          children: [
+                            if(productModels.productName != null)
+                            ListTile(
+                              title: Text("Product Name"),
+                              subtitle: Text("${productModels.productName}"),
                             ),
-                          ),
+                            if(productModels.productUniqueness != null)
+                            ListTile(
+                              title: Text("Uniqueness of the Product"),
+                              subtitle: Text("${productModels.productUniqueness}"),
+                            ),
+                            if(productModels.labelClaim != null)
+                            ListTile(
+                              title: Text("Lable Cliam"),
+                              subtitle: Text("${productModels.labelClaim}"),
+                            ),
+                            if(productModels.top != null)
+                            ListTile(
+                              title: Text("Type of Product"),
+                              subtitle: Text("${productModels.top}"),
+                            ),
+                            if(productModels.tcp != null)
+                            ListTile(
+                              title: Text("Target Customer Profile"),
+                              subtitle: Text("${productModels.tcp}"),
+                            ),
+                            if(productModels.tcp != null)
+                            ListTile(
+                              title: Text("Target Doctors"),
+                              subtitle: Text("${productModels.tcp}"),
+                            ),
+                            if(productModels.patientsProfile != null)
+                            ListTile(
+                              title: Text("Patients Profile"),
+                              subtitle: Text("${productModels.patientsProfile}"),
+                            ),
+                            if(productModels.cpa != null)
+                            ListTile(
+                              title: Text("Customer Potential Analyser"),
+                              subtitle: Text("${productModels.cpa}"),
+                            ),
+
+                            if(productModels.others != null)
+                              ListTile(
+                                title: Text("Others"),
+                                subtitle: Text("${productModels.others}"),
+                              ),
+
+
+                          ],
                         ),
                       ),
+
+
+                      // Padding(
+                      //   padding:
+                      //       const EdgeInsets.only(left: 20, right: 20, top: 15),
+                      //   child: Container(
+                      //     width: MediaQuery.of(context).size.width,
+                      //     child: SingleChildScrollView(
+                      //       child: Column(
+                      //         mainAxisAlignment: MainAxisAlignment.start,
+                      //         crossAxisAlignment: CrossAxisAlignment.start,
+                      //         children: [
+                      //           Text(
+                      //             productModels.productName != null
+                      //                 ? productModels.productName!
+                      //                 : 'TELBRIT',
+                      //             style: GoogleFonts.dmSans(
+                      //               fontSize: 16,
+                      //               fontWeight: FontWeight.w400,
+                      //               color: const Color(0xff262930),
+                      //             ),
+                      //           ),
+                      //           const SizedBox(
+                      //             height: 5,
+                      //           ),
+                      //           Text(
+                      //             productModels.productUniqueness != null
+                      //                 ? productModels.productUniqueness!
+                      //                 : 'Uniqueness of the product:',
+                      //             style: GoogleFonts.dmSans(
+                      //                 fontSize: 12,
+                      //                 fontWeight: FontWeight.w400,
+                      //                 color: const Color(0xff8394AA)),
+                      //           ),
+                      //           const SizedBox(
+                      //             height: 3,
+                      //           ),
+                      //           Text(
+                      //             productModels.others != null
+                      //                 ? productModels.others!
+                      //                 : 'The only brand that has ALA 200mg.',
+                      //             style: GoogleFonts.dmSans(
+                      //                 fontSize: 12,
+                      //                 fontWeight: FontWeight.w400,
+                      //                 color: const Color(0xff191919)),
+                      //           ),
+                      //           const SizedBox(
+                      //             height: 10,
+                      //           ),
+                      //           Text(
+                      //             'Type of Product:',
+                      //             style: GoogleFonts.dmSans(
+                      //                 fontSize: 12,
+                      //                 fontWeight: FontWeight.w400,
+                      //                 color: const Color(0xff8394AA)),
+                      //           ),
+                      //           const SizedBox(
+                      //             height: 3,
+                      //           ),
+                      //           Text(
+                      //             productModels.others != null
+                      //                 ? productModels.others!
+                      //                 : 'Medicine',
+                      //             style: GoogleFonts.dmSans(
+                      //                 fontSize: 12,
+                      //                 fontWeight: FontWeight.w400,
+                      //                 color: const Color(0xff191919)),
+                      //           ),
+                      //           const SizedBox(
+                      //             height: 10,
+                      //           ),
+                      //           Text(
+                      //             'Label Claim:',
+                      //             style: GoogleFonts.dmSans(
+                      //                 fontSize: 12,
+                      //                 fontWeight: FontWeight.w400,
+                      //                 color: const Color(0xff8394AA)),
+                      //           ),
+                      //
+                      //           const SizedBox(
+                      //             height: 3,
+                      //           ),
+                      //           Text(
+                      //             productModels.labelClaim != null
+                      //                 ? productModels.labelClaim!
+                      //                 : 'Medicine',
+                      //             style: GoogleFonts.dmSans(
+                      //                 fontSize: 12,
+                      //                 fontWeight: FontWeight.w400,
+                      //                 color: const Color(0xff191919)),
+                      //           ),
+                      //           // ListView.builder(
+                      //           //     physics: const NeverScrollableScrollPhysics(),
+                      //           //     shrinkWrap: true,
+                      //           //     itemCount: titles.length,
+                      //           //     itemBuilder: (context, index) {
+                      //           //       return TextTile(
+                      //           //           title: productModels[0].labelClaim!);
+                      //           //     }),
+                      //         ],
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),

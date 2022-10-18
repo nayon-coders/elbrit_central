@@ -206,97 +206,30 @@ class _LogInPageState extends State<LogInPage> {
                         ),
                         const SizedBox(height: 5),
                         Visibility(
-                          visible: !isLoading,
+
                           child: Padding(
                             padding: const EdgeInsets.only(left: 20, right: 20),
-                            child: BottomButton(
-                              text: 'Get OTP',
-                              disabled: false,
-                              onTap: () async {
-                                setState(() {
-                                  isLoading = true;
-                                });
-                                FocusScope.of(context).unfocus();
-                                final EmployeeModel? employeeModel = await Api()
-                                    .getEmployeeData(
-                                    mobileNo: _Controller.text);
-
-                                print(employeeModel!.name);
-                                final localDatabase = await SharedPreferences.getInstance();
-                                var userID = localDatabase.setString("userId", employeeModel!.id.toString());
-                                print("User id: ${employeeModel!.id}");
-                                print(
-                                    ">>>>>>>>>>>>>>ok got it<<<<<<<<<<<<<<<<<<<");
-
-                              //  initOneSignal(context, employeeModel!.id);
-
-
-                                if (employeeModel != null) {
-                                  //send devide token
-                                  if (deviceTokenToSendPushNotification != null && deviceTokenToSendPushNotification != "null") {
-                                    var response = await http.post(
-                                        Uri.parse("https://admin.elbrit.org/api/updateToken"),
-                                        body: {
-                                          "player_id": deviceTokenToSendPushNotification.toString(),
-                                          "userId": userID.toString(),
-                                        }
-                                    );
-                                    print("Status code ================= ${response.statusCode}");
-
-                                    if (response.statusCode == 200) {
-                                      print("Send device token Success ====================== $deviceTokenToSendPushNotification");
-                                      //========================================//
-                                      localDatabase.setString("teamID", employeeModel.team!.id.toString());
-                                      localDatabase.setString("phone", _Controller.text.toString());
-                                      localDatabase.setInt("device_token", 1);
-                                      //datosusuarioPhone = _Controller.text;
-                                      //GlobalData().setId(employeeModel.team!.id);
-                                      print("Team ID" + employeeModel.team!.id.toString());
-                                      print(">>>>>>>>>>>>>>ok got it<<<<<<<<<<<<<<<<<<<");
-
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(const SnackBar(
-                                        duration: Duration(seconds: 2),
-                                        content: Text("Otp Sent"),
-                                      ));
-
-                                      //TODO: Delete when release
-                                      // Navigator.pushAndRemoveUntil(
-                                      //     context,
-                                      //     MaterialPageRoute(
-                                      //         builder: (context) => HomePage()),
-                                      //         (route) => false);
-
-                                      //TODO: Comment out when release
-                                      Navigator.of(context).push(MaterialPageRoute(
-                                          builder: (context) =>
-                                              LogInOtpPage(_Controller.text, employeeModel!.id.toString())));
-                                    } else {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(const SnackBar(
-                                        duration: Duration(seconds: 5),
-                                        content: Text(
-                                            " You have entered wrong Phone Number"),
-                                      ));
-                                    }
-
-                                    setState(() {
-                                      isLoading = false;
-                                    });
-                                    } else {
-                                      print("Push notification is OFF");
-                                    }
-
-                                  }
-                                setState(() {
-                                  isLoading = false;
-                                });
-
-                              },
+                            child: GestureDetector(
+                              onTap: () => sendOTP(),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: const Color(0xff0DA7ED)),
+                                width: MediaQuery.of(context).size.width,
+                                margin: const EdgeInsets.only(top: 10, bottom: 10),
+                                padding: const EdgeInsets.only(top: 13, bottom: 13),
+                                alignment: Alignment.center,
+                                child: isLoading ? CircularProgressIndicator()
+                                    : Text(
+                                    "Send OTP",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                ),
+                              ),
                             ),
-                          ),
-                          replacement: const Center(
-                            child: CircularProgressIndicator(),
                           ),
                         )
                       ],
@@ -328,57 +261,145 @@ class _LogInPageState extends State<LogInPage> {
     );
   }
 
+  //send otp
+sendOTP()async{
+  setState(() {
+    isLoading = true;
+  });
+  FocusScope.of(context).unfocus();
+  final EmployeeModel? employeeModel = await Api()
+      .getEmployeeData(
+      mobileNo: _Controller.text);
 
-  //=========== Notification =================
-  String? osUserID;
+  print(employeeModel!.name);
+  final localDatabase = await SharedPreferences.getInstance();
+  var user_id =  employeeModel!.id.toString();
+  var userID = localDatabase.setString("userId", employeeModel!.id.toString());
+  print("User id: ${employeeModel!.id}");
+  print(
+      ">>>>>>>>>>>>>>ok got it<<<<<<<<<<<<<<<<<<<");
 
-  Future<void> initOneSignal(BuildContext context, userID) async {
+  //  initOneSignal(context, employeeModel!.id);
 
+
+  if (employeeModel != null) {
     //send devide token
-    if (osUserID != null && osUserID != "null") {
-      var response = await http.post(
-          Uri.parse("https://admin.elbrit.org/api/updateToken"),
-          body: {
-            "player_id": osUserID.toString(),
-            "userId": userID.toString(),
-          }
+    if (deviceTokenToSendPushNotification != null) {
+      print("deviceTokenToSendPushNotification code ================= $deviceTokenToSendPushNotification");
+      var response = await Api().sendDeviceToken(
+        player_id: deviceTokenToSendPushNotification!,
+        user_id: user_id,
       );
       print("Status code ================= ${response.statusCode}");
+      print("Body code ================= ${response.body}");
 
       if (response.statusCode == 200) {
-        Fluttertoast.showToast(
-            msg: "Push notification is ON",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.green,
-            textColor: Colors.white,
-            fontSize: 16.0
-        );
-        print("Send device token ====================== $osUserID");
+        print("Send device token Success ====================== $deviceTokenToSendPushNotification");
+        //========================================//
+        localDatabase.setString("teamID", employeeModel.team!.id.toString());
+        localDatabase.setString("phone", _Controller.text.toString());
+        localDatabase.setInt("device_token", 1);
+        //localDatabase.setString("daily_login", "1");
+        //datosusuarioPhone = _Controller.text;
+        //GlobalData().setId(employeeModel.team!.id);
+        print("Team ID" + employeeModel.team!.id.toString());
+        print(">>>>>>>>>>>>>>ok got it<<<<<<<<<<<<<<<<<<<");
+
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(
+          duration: Duration(seconds: 2),
+          content: Text("Otp Sent"),
+        ));
+
+        //TODO: Delete when release
+        // Navigator.pushAndRemoveUntil(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (context) => HomePage()),
+        //         (route) => false);
+
+        //TODO: Comment out when release
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) =>
+                LogInOtpPage(_Controller.text, employeeModel!.id.toString())));
       } else {
-        print("Push notification is OFF");
+        setState(() {
+          isLoading = false;
+        });
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(
+          duration: Duration(seconds: 5),
+          content: Text(
+              " You have entered wrong Phone Number"),
+        ));
       }
+
+
     } else {
-      Fluttertoast.showToast(
-          msg: "Device ID is Null. You can't get Notification",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 4,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0
-      );
+      print("Push notification is OFF");
     }
 
 
-    sendData(userID) async {
 
-    }
-
-    handleForegroundNotifications() {
-      return null;
-    }
   }
+  setState(() {
+    isLoading = false;
+  });
+}
+
+
+
+
+  //=========== Notification =================
+  // String? osUserID;
+  //
+  // Future<void> initOneSignal(BuildContext context, userID) async {
+  //
+  //   //send devide token
+  //   if (osUserID != null && osUserID != "null") {
+  //     var response = await http.post(
+  //         Uri.parse("https://admin.elbrit.org/api/updateToken"),
+  //         body: {
+  //           "player_id": osUserID.toString(),
+  //           "userId": userID.toString(),
+  //         }
+  //     );
+  //     print("Status code ================= ${response.statusCode}");
+  //
+  //     if (response.statusCode == 200) {
+  //       Fluttertoast.showToast(
+  //           msg: "Push notification is ON",
+  //           toastLength: Toast.LENGTH_SHORT,
+  //           gravity: ToastGravity.BOTTOM,
+  //           timeInSecForIosWeb: 1,
+  //           backgroundColor: Colors.green,
+  //           textColor: Colors.white,
+  //           fontSize: 16.0
+  //       );
+  //       print("Send device token ====================== $osUserID");
+  //     } else {
+  //       print("Push notification is OFF");
+  //     }
+  //   } else {
+  //     Fluttertoast.showToast(
+  //         msg: "Device ID is Null. You can't get Notification",
+  //         toastLength: Toast.LENGTH_SHORT,
+  //         gravity: ToastGravity.BOTTOM,
+  //         timeInSecForIosWeb: 4,
+  //         backgroundColor: Colors.red,
+  //         textColor: Colors.white,
+  //         fontSize: 16.0
+  //     );
+  //   }
+  //
+  //
+  //   sendData(userID) async {
+  //
+  //   }
+  //
+  //   handleForegroundNotifications() {
+  //     return null;
+  //   }
+  // }
 
 }

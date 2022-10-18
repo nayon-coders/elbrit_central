@@ -375,6 +375,8 @@ class _ProfilePageState extends State<ProfilePage> {
                     SharedPreferences prefs =
                         await SharedPreferences.getInstance();
                     final success = await prefs.remove('phone');
+                    prefs.remove("device_token");
+                    prefs.remove("daily_login");
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => LogInPage()),

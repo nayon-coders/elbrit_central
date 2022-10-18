@@ -118,4 +118,14 @@ class Api {
       throw Exception('Failed to load data');
     }
   }
+
+ sendDeviceToken({required String player_id, required dynamic user_id})async{
+    final response = await http.post(Uri.parse("https://admin.elbrit.org/api/updateToken"),
+        body: {
+            "player_id" : player_id,
+            "userId" : user_id,
+        }
+    );
+    return response;
+  }
 }
