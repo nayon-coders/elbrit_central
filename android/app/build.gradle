@@ -54,13 +54,12 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.elbrit.central"
-        minSdkVersion 22
+        minSdkVersion 27
         targetSdkVersion 31
         multiDexEnabled true
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
-
     signingConfigs {
         release {
             keyAlias keystoreProperties['keyAlias']
@@ -69,13 +68,14 @@ android {
             storePassword keystoreProperties['storePassword']
         }
     }
+
     buildTypes {
         release {
             signingConfig signingConfigs.release
         }
     }
     lintOptions {
-        checkReleaseBuilds false
+        checkReleaseBuilds true
     }
 
 }
