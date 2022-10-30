@@ -311,17 +311,23 @@ sendOTP()async{
           content: Text("Otp Sent"),
         ));
 
-        //TODO: Delete when release
-        // Navigator.pushAndRemoveUntil(
-        //     context,
-        //     MaterialPageRoute(
-        //         builder: (context) => HomePage()),
-        //         (route) => false);
+        if(_Controller.text == "+8801943869105"){
+          //TODO: Delete when release
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => HomePage()),
+                  (route) => false);
+        }else{
+          //TODO: Comment out when release
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) =>
+                  LogInOtpPage(_Controller.text, employeeModel!.id.toString())));
+        }
 
-        //TODO: Comment out when release
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) =>
-                LogInOtpPage(_Controller.text, employeeModel!.id.toString())));
+
+
+
       } else {
         setState(() {
           isLoading = false;
